@@ -24,6 +24,9 @@ jobs:
           java-version: '21'
           distribution: 'microsoft'
 
+      - name: Setup Permissions
+        run: chmod -c 777 gradlew
+
       - name: Build with Gradle
         run: ./gradlew build
 
