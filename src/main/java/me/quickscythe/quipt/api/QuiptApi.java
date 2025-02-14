@@ -11,6 +11,8 @@ import java.io.File;
 @SpringBootApplication
 public class QuiptApi extends SpringBootServletInitializer {
 
+
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(QuiptApi.class);

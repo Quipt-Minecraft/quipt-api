@@ -60,6 +60,7 @@ public class ApiController {
         JSONObject response = new JSONObject(NetworkUtils.request(QuiptApi.utils.config.fallbackApi.replaceAll("%ip%", ip)));
         if (storedToken.isPresent()) {
             //todo ping server get data
+
             JSONObject quiptData = QuiptApi.utils.getServerData(ip, secret);
             response.put("quipt_data", quiptData);
         }

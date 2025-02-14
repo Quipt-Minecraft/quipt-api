@@ -28,6 +28,7 @@ public class Utils {
     }
 
 
+
     public void update(String ip, JSONObject data) {
         config.data.put(ip, data);
         config.save();
