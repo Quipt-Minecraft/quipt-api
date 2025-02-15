@@ -1,6 +1,6 @@
-package me.quickscythe.quipt.api.controllers;
+package com.quiptmc.api.controllers;
 
-import me.quickscythe.quipt.api.QuiptApi;
+import com.quiptmc.api.QuiptApi;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

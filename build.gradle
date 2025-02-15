@@ -5,7 +5,7 @@ plugins {
     id "war"
 }
 
-group = "me.quickscythe"
+group = "com.quiptmc"
 version = "$project_version-$build_status-B$build_number"
 
 repositories {
@@ -30,7 +30,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     providedRuntime "org.springframework.boot:spring-boot-starter-tomcat"
     implementation "org.json:json:$json_version"
-    implementation "me.quickscythe:quipt-core:$quipt_core_version"
+    implementation "com.quiptmc:quipt-core:$quipt_core_version"
 }
 
 test {

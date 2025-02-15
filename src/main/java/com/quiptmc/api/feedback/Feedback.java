@@ -1,4 +1,4 @@
-package me.quickscythe.quipt.api.feedback;
+package com.quiptmc.api.feedback;
 
 public record Feedback(Result result, String message) {
 

@@ -1,7 +1,7 @@
-package me.quickscythe.quipt.api.controllers;
+package com.quiptmc.api.controllers;
 
-import me.quickscythe.quipt.api.feedback.Feedback;
-import me.quickscythe.quipt.api.utils.NetworkUtils;
+import com.quiptmc.api.feedback.Feedback;
+import com.quiptmc.core.utils.NetworkUtils;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 

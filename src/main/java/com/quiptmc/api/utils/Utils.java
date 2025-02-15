@@ -1,8 +1,8 @@
-package me.quickscythe.quipt.api.utils;
+package com.quiptmc.api.utils;
 
-import me.quickscythe.quipt.api.QuiptIntegration;
-import me.quickscythe.quipt.api.config.ApiConfig;
-import me.quickscythe.quipt.api.config.ConfigManager;
+import com.quiptmc.core.QuiptIntegration;
+import com.quiptmc.core.config.ConfigManager;
+import com.quiptmc.api.config.ApiConfig;
 import org.json.JSONObject;
 import org.springframework.lang.Nullable;
 

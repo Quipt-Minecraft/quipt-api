@@ -1,14 +1,14 @@
-package me.quickscythe.quipt.api.controllers;
+package com.quiptmc.api.controllers;
 
-import me.quickscythe.quipt.api.QuiptApi;
-import me.quickscythe.quipt.api.feedback.Feedback;
-import me.quickscythe.quipt.api.utils.NetworkUtils;
+import com.quiptmc.core.utils.NetworkUtils;
+import com.quiptmc.api.QuiptApi;
+import com.quiptmc.api.feedback.Feedback;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-import static me.quickscythe.quipt.api.feedback.Feedback.Result.SUCCESS;
+import static com.quiptmc.api.feedback.Feedback.Result.SUCCESS;
 
 
 @RestController

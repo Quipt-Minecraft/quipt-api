@@ -1,6 +1,7 @@
-package me.quickscythe.quipt.api;
+package com.quiptmc.api;
 
-import me.quickscythe.quipt.api.utils.Utils;
+import com.quiptmc.core.QuiptIntegration;
+import com.quiptmc.api.utils.Utils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;

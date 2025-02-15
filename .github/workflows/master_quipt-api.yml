@@ -27,6 +27,9 @@ jobs:
       - name: Setup Permissions
         run: chmod -c 777 gradlew
 
+      - name: Run Tests
+        run: ./gradlew test
+
       - name: Build with Gradle
         run: ./gradlew build
 

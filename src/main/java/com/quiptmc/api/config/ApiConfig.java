@@ -1,12 +1,14 @@
-package me.quickscythe.quipt.api.config;
+package com.quiptmc.api.config;
 
-import me.quickscythe.quipt.api.QuiptIntegration;
-import org.json.JSONArray;
+import com.quiptmc.core.QuiptIntegration;
+import com.quiptmc.core.config.Config;
+import com.quiptmc.core.config.ConfigTemplate;
+import com.quiptmc.core.config.ConfigValue;
 import org.json.JSONObject;
 
 import java.io.File;
 
-import static me.quickscythe.quipt.api.config.ConfigTemplate.Extension.JSON;
+import static com.quiptmc.core.config.ConfigTemplate.Extension.JSON;
 
 @ConfigTemplate(name = "config", ext = JSON)
 public class ApiConfig extends Config {
