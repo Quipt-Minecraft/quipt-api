@@ -17,6 +17,8 @@ public record Feedback(Result result, String message) {
 
     public enum Result {
         SUCCESS,
+        NO_ACTION,
         FAILURE
     }
+
 }

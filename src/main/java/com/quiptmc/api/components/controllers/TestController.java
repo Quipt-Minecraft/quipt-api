@@ -1,4 +1,4 @@
-package com.quiptmc.api.controllers;
+package com.quiptmc.api.components.controllers;
 
 import com.quiptmc.api.feedback.Feedback;
 import com.quiptmc.core.utils.NetworkUtils;
