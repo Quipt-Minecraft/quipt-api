@@ -46,7 +46,7 @@
 
 .dark-background {
   --secondary-background-color: #232323;
-  --background-color: #08005e;
+  --background-color: #1D33B0FF;
 
   --default-color: #ffffff;
   --heading-color: #ffffff;
@@ -145,7 +145,7 @@ h6 {
 # Global Header
 --------------------------------------------------------------*/
 .header {
-  --background-color: rgba(255, 255, 255, 0);
+  --background-color: #1A2D91FF;
   --default-color: #ffffff;
   --heading-color: #ffffff;
   color: var(--default-color);
@@ -917,15 +917,15 @@ section,
 .hero .wave1 use {
   animation: move-forever1 10s linear infinite;
   animation-delay: -2s;
-  fill: var(--secondary-background-color);
+  fill: var(--background-color);
   opacity: 0.6;
 }
 
 .hero .wave2 use {
   animation: move-forever2 8s linear infinite;
   animation-delay: -2s;
-  fill: var(--background-color);
-  opacity: 0.4;
+  fill: var(--accent-color);
+  opacity: 0.5;
 }
 
 .hero .wave3 use {

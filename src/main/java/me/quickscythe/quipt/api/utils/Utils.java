@@ -45,4 +45,9 @@ public class Utils {
         if (secret == null || (token.isPresent() && !token.get().equals(secret))) response.remove("player_stats");
         return response;
     }
+
+    public void addRequest() {
+        config.requests = config.requests+1;
+        config.save();
+    }
 }

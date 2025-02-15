@@ -26,7 +26,7 @@ dependencies {
     testImplementation "ch.qos.logback:logback-core:$logback_version"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 
-
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-web"
     providedRuntime "org.springframework.boot:spring-boot-starter-tomcat"
     implementation "org.json:json:$json_version"

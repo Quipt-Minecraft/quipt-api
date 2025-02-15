@@ -20,6 +20,9 @@ public class ApiConfig extends Config {
     @ConfigValue
     public String fallbackApi = "https://api.mcsrvstat.us/3/%ip%";
 
+    @ConfigValue
+    public int requests = 0;
+
     public ApiConfig(File file, String name, ConfigTemplate.Extension extension, QuiptIntegration integration) {
         super(file, name, extension, integration);
     }

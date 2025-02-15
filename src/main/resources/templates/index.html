@@ -63,7 +63,7 @@
           </div>
 
           <div class="col-lg-6  d-flex flex-column justify-content-center" data-aos="fade-in">
-            <h1>Welcome to the  <span>QuiptAPI</span></h1>
+            <h1>Welcome to the  <span>QuiptAPI</span>!</h1>
             <p>This API combines the Ping and Query protocols into one simple JSON output.</p>
             <div class="d-flex">
               <a href="#about" class="btn-get-started">Get Started</a>
@@ -90,6 +90,51 @@
 
     </section><!-- /Hero Section -->
 
+    <!-- Stats Section -->
+    <section id="stats" class="stats section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
+            <i class="bi bi-hdd-stack"></i>
+            <div class="stats-item">
+              <span data-purecounter-start="0" th:data-purecounter-end="${servers}" data-purecounter-duration="1" class="purecounter"></span>
+              <p>Servers Installed</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
+            <i class="bi bi-journal-richtext"></i>
+            <div class="stats-item">
+              <span data-purecounter-start="0" th:data-purecounter-end="${requestsHandled}" data-purecounter-duration="1" class="purecounter"></span>
+              <p>Requests Handled</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
+            <i class="bi bi-headset"></i>
+            <div class="stats-item">
+              <span data-purecounter-start="0" th:data-purecounter-end="${uptime}" data-purecounter-duration="1" class="purecounter"></span>
+              <p>Uptime</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
+            <i class="bi bi-people"></i>
+            <div class="stats-item">
+              <span data-purecounter-start="0" th:data-purecounter-end="${hardWorkers}" data-purecounter-duration="1" class="purecounter"></span>
+              <p>Hard Workers</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Stats Section -->
+
     <!-- About Section -->
     <section id="about" class="about section">
 
@@ -97,9 +142,9 @@
         <div class="row align-items-xl-center gy-5">
 
           <div class="col-xl-5 content">
-            <h3>About Us</h3>
-            <h2>Ducimus rerum libero reprehenderit cumque</h2>
-            <p>Ipsa sint sit. Quis ducimus tempore dolores impedit et dolor cumque alias maxime. Enim reiciendis minus et rerum hic non. Dicta quas cum quia maiores iure. Quidem nulla qui assumenda incidunt voluptatem tempora deleniti soluta.</p>
+            <h3>Getting Started</h3>
+            <h2>How to use </h2>
+            <p>The Quipt API is most effective when used with a server with <a href="#">Quipt</a> installed, however, will pull information from all Minecraft servers.</p>
             <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
           </div>
 
@@ -145,6 +190,8 @@
       </div>
 
     </section><!-- /About Section -->
+
+
 
     <!-- Features Section -->
     <section id="features" class="features section">
@@ -243,50 +290,7 @@
 
     </section><!-- /Features Section -->
 
-    <!-- Stats Section -->
-    <section id="stats" class="stats section">
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row gy-4">
-
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-emoji-smile"></i>
-            <div class="stats-item">
-              <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1" class="purecounter"></span>
-              <p>Happy Clients</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-journal-richtext"></i>
-            <div class="stats-item">
-              <span data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1" class="purecounter"></span>
-              <p>Projects</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-headset"></i>
-            <div class="stats-item">
-              <span data-purecounter-start="0" data-purecounter-end="1463" data-purecounter-duration="1" class="purecounter"></span>
-              <p>Hours Of Support</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-people"></i>
-            <div class="stats-item">
-              <span data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1" class="purecounter"></span>
-              <p>Hard Workers</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-        </div>
-
-      </div>
-
-    </section><!-- /Stats Section -->
 
     <!-- Details Section -->
     <section id="details" class="details section">
@@ -300,7 +304,7 @@
       <div class="container">
 
         <div class="row gy-4 align-items-center features-item">
-          <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
+          <div class="col-md-5 d-flex align-items-center" data-aos="fade-up" data-aos-delay="100">
             <img src="assets/img/details-1.png" class="img-fluid" alt="">
           </div>
           <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
@@ -318,14 +322,14 @@
         </div><!-- Features Item -->
 
         <div class="row gy-4 align-items-center features-item">
-          <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
+          <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="fade-up" data-aos-delay="200">
             <img src="assets/img/details-2.png" class="img-fluid" alt="">
           </div>
           <div class="col-md-7 order-2 order-md-1" data-aos="fade-up" data-aos-delay="200">
-            <h3>Corporis temporibus maiores provident</h3>
+            <h3>Corporis tempdoribus maiores provident</h3>
             <p class="fst-italic">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-              magna aliqua.
+              magna aliqua. t
             </p>
             <p>
               Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
@@ -336,7 +340,7 @@
         </div><!-- Features Item -->
 
         <div class="row gy-4 align-items-center features-item">
-          <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out">
+          <div class="col-md-5 d-flex align-items-center" data-aos="fade-up">
             <img src="assets/img/details-3.png" class="img-fluid" alt="">
           </div>
           <div class="col-md-7" data-aos="fade-up">
@@ -351,7 +355,7 @@
         </div><!-- Features Item -->
 
         <div class="row gy-4 align-items-center features-item">
-          <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out">
+          <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="fade-up">
             <img src="assets/img/details-4.png" class="img-fluid" alt="">
           </div>
           <div class="col-md-7 order-2 order-md-1" data-aos="fade-up">
