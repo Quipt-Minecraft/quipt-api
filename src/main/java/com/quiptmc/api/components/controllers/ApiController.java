@@ -7,16 +7,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api")
 public class ApiController {
 
-
     @PostMapping("/register/{ip}")
-    public String registerServer(@PathVariable String ip, @RequestParam String token) {
-        if (token == null || token.isEmpty()) return new Feedback(Feedback.Result.FAILURE, "Token not provided").json();
-        return new Feedback(QuiptApi.utils.serverManager.register(ip, token), "Registering Server...").json();
+    public String registerServer(@PathVariable String ip, @RequestBody String data) {
+        try {
+            JSONObject json = new JSONObject(data);
+            if (!json.has("secret")) return new Feedback(Feedback.Result.FAILURE, "Secret not provided").json();
+            return new Feedback(QuiptApi.utils.serverManager.register(ip, json.getString("secret")), "Registering Server...").json();
+        } catch (JSONException ex) {
+            return new Feedback(Feedback.Result.FAILURE, "Invalid JSON").json();
+        }
     }
 
     @PostMapping("/update/{ip}")
@@ -40,7 +43,6 @@ public class ApiController {
         }
     }
 
-
     @GetMapping("/server_status/{ip}")
     public String getServerStatus(@PathVariable String ip) {
         return requestServerStatus(ip, null);
@@ -52,6 +54,4 @@ public class ApiController {
         response.put("quipt_data", quiptData);
         return response.toString();
     }
-
-
 }

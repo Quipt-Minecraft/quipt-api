@@ -14,7 +14,6 @@ public class PageController {
 
         model.addAttribute("servers", QuiptApi.utils.serverManager.servers().size());
         model.addAttribute("requestsHandled", QuiptApi.utils.serverManager.requests().size());
-        System.out.println(QuiptApi.utils.uptimeManager.getUptime());
         model.addAttribute("uptime", QuiptApi.utils.uptimeManager.getUptime());
         model.addAttribute("hardWorkers", 25);
         return "index";

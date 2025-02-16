@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 public class TestController {
 
 
-
     public static String post(String url, JSONObject data, String... auth) {
         try {
             URL myUrl = new URI(url).toURL();
@@ -38,27 +37,24 @@ public class TestController {
                 conn.setRequestProperty("Authorization", basicAuth);
             }
             conn.getOutputStream().write(data.toString().getBytes());
-            String response = NetworkUtils.streamToString(conn.getInputStream());
-            System.out.println("Response: " + response);
-            return response;
+            return NetworkUtils.streamToString(conn.getInputStream());
         } catch (Exception ex) {
             Logger.getLogger("Network").info("An error occurred while downloading file");
             ex.printStackTrace();
         }
         return null;
     }
+
     @PostMapping("/post")
-    public String doPost(@RequestBody String data){
-        System.out.println("Test: " + data);
+    public String doPost(@RequestBody String data) {
         return data;
     }
 
     @GetMapping("/test")
-    public String doTest(){
+    public String doTest() {
         JSONObject data = new JSONObject();
         data.put("test", "test");
         String response = NetworkUtils.post("http://localhost:8080/api/update/127.0.0.1", data);
-        System.out.println("Response 2: " + response);
         return new Feedback(Feedback.Result.SUCCESS, "Test successful").json();
     }
 }

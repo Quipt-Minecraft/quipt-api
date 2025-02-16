@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class ServerManager {
 
@@ -55,5 +56,20 @@ public class ServerManager {
             requests.add(config.requests.getJSONObject(i));
         }
         return requests;
+    }
+
+    public void gc() {
+        List<String> toRemove = new ArrayList<>();
+        for(String key :config.servers.keySet()){
+            JSONObject server = config.servers.getJSONObject(key);
+            //todo change this time value to 3 months
+            if(server.getLong("updated") + TimeUnit.MICROSECONDS.convert(92, TimeUnit.DAYS) < System.currentTimeMillis()){
+                toRemove.add(key);
+            }
+        }
+        for(String key : toRemove){
+            config.servers.remove(key);
+        }
+        config.save();
     }
 }
