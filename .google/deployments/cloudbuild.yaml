@@ -1,7 +1,3 @@
-substitutions:
-  _GOOGLE_RUNTIME_VERSION: "21"
-
-
 steps:
   - name: gcr.io/k8s-skaffold/pack
     args:
@@ -48,7 +44,8 @@ substitutions:
   _AR_REPOSITORY: cloud-run-source-deploy
   _AR_PROJECT_ID: vivid-carrier-433506-c8
   _PLATFORM: managed
+  _GOOGLE_RUNTIME_VERSION: "21"
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
-  - quipt-api-test
+  - quipt-api
