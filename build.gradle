@@ -21,7 +21,7 @@ repositories {
 }
 
 bootJar {
-    mainClass = 'com.quiptapi.QuiptApi'
+    mainClass = 'com.quiptmc.QuiptApi'
 }
 
 dependencies {
