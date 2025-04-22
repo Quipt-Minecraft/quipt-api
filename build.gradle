@@ -24,6 +24,9 @@ repositories {
 bootWar {
     archiveFileName = "${rootProject.name}-latest.war"
 }
+bootJar {
+    mainClass = 'com.quiptapi.QuiptApi'
+}
 
 dependencies {
     testImplementation platform("org.junit:junit-bom:$junit_version")
