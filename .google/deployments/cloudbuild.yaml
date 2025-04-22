@@ -7,7 +7,8 @@ steps:
       - '--builder=gcr.io/buildpacks/builder:v1'
       - '--network=cloudbuild'
       - '--path=.'
-      - '--env=BP_JVM_VERSION=21.*'
+      - "--env"
+      - "GOOGLE_RUNTIME_VERSION=21"
     id: Buildpack
     entrypoint: pack
   - name: gcr.io/cloud-builders/docker
