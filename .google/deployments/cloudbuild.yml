@@ -1,0 +1,12 @@
+substitutions:
+  _GOOGLE_RUNTIME_VERSION: "21"
+
+steps:
+  - name: 'gcr.io/buildpacks/builder'
+    args:
+      - "build"
+      - "--env"
+      - "GOOGLE_RUNTIME_VERSION=21"
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/my-app"
+      - "."
