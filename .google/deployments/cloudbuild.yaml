@@ -1,12 +1,54 @@
 substitutions:
   _GOOGLE_RUNTIME_VERSION: "21"
 
+
 steps:
-  - name: 'gcr.io/buildpacks/builder'
+  - name: gcr.io/k8s-skaffold/pack
     args:
-      - "build"
-      - "--env"
-      - "GOOGLE_RUNTIME_VERSION=21"
-      - "--tag"
-      - "gcr.io/$PROJECT_ID/my-app"
-      - "."
+      - build
+      - >-
+        $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - '--builder=gcr.io/buildpacks/builder:v1'
+      - '--network=cloudbuild'
+      - '--path=.'
+    id: Buildpack
+    entrypoint: pack
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - >-
+        $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+    id: Push
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - run
+      - services
+      - update
+      - $_SERVICE_NAME
+      - '--platform=managed'
+      - >-
+        --image=$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+      - >-
+        --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
+      - '--region=$_DEPLOY_REGION'
+      - '--quiet'
+    id: Deploy
+    entrypoint: gcloud
+images:
+  - >-
+    $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
+options:
+  substitutionOption: ALLOW_LOOSE
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _SERVICE_NAME: quipt-api-test
+  _DEPLOY_REGION: us-central1
+  _AR_HOSTNAME: us-central1-docker.pkg.dev
+  _TRIGGER_ID: ca3b91b4-7f28-43aa-9f9c-1b7831e54970
+  _AR_REPOSITORY: cloud-run-source-deploy
+  _AR_PROJECT_ID: vivid-carrier-433506-c8
+  _PLATFORM: managed
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - quipt-api-test
