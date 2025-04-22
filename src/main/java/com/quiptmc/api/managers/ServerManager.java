@@ -4,6 +4,7 @@ import com.quiptmc.api.config.ServerStorageConfig;
 import com.quiptmc.api.feedback.Feedback;
 import com.quiptmc.core.QuiptIntegration;
 import com.quiptmc.core.config.ConfigManager;
+import com.quiptmc.core.utils.NetworkUtils;
 import org.json.JSONObject;
 import org.springframework.lang.Nullable;
 
@@ -23,7 +24,7 @@ public class ServerManager {
 
     public Feedback.Result register(String ip, String secret) {
         if (!config.servers.has(ip)) {
-            config.createServer(ip, secret);
+//            config.createServer(ip, secret);
             return Feedback.Result.SUCCESS;
         }
         return Feedback.Result.NO_ACTION;
@@ -34,11 +35,8 @@ public class ServerManager {
     }
 
 
-    public Feedback.Result update(String ip, String secret, JSONObject data) {
+    public Feedback.Result update(String ip, JSONObject data) {
         if (!config.servers.has(ip)) return Feedback.Result.NO_ACTION;
-        Optional<String> token = getSecret(ip);
-        assert token.isPresent();
-        if (!token.get().equals(secret)) return Feedback.Result.FAILURE;
         return config.updateServer(ip, data);
     }
 
@@ -71,5 +69,11 @@ public class ServerManager {
             config.servers.remove(key);
         }
         config.save();
+    }
+
+    public Feedback.Result action(String ip, JSONObject json) {
+        String callbackUrl = json.getJSONObject("secret").getString("callback_url");
+        NetworkUtils.post(callbackUrl + "/action", json);
+        return Feedback.Result.SUCCESS;
     }
 }

@@ -23,19 +23,20 @@ public class ServerStorageConfig extends Config {
 
     public ServerStorageConfig(File file, String name, ConfigTemplate.Extension extension, QuiptIntegration integration) {
         super(file, name, extension, integration);
-        //todo figure out when stuff is loaded, check if updated is older than 3 months, if so, remove
     }
 
-    public void createServer(String ip, String secret) {
-
-        JSONObject server = new JSONObject();
-        server.put("ip", ip);
-        server.put("secret", secret);
-        server.put("updated", System.currentTimeMillis());
-        servers.put(ip, server);
-        reportRequest(ip, RequestType.REGISTER, Feedback.Result.SUCCESS);
-        save();
-    }
+//    public MinecraftServer createServer(String ip, String secret) {
+//        JSONObject server = new JSONObject();
+//        server.put("ip", ip);
+//        server.put("secret", secret);
+//        server.put("updated", System.currentTimeMillis());
+//        //todo add some information about how to reach the server with webhook requests
+//        servers.put(ip, server);
+//        reportRequest(ip, RequestType.REGISTER, Feedback.Result.SUCCESS);
+//        save();
+//        //todo remove all api data from MinecraftServer
+//        return new MinecraftServer(ip, server);
+//    }
 
     private void reportRequest(String ip, RequestType type, Feedback.Result result) {
         JSONObject request = new JSONObject();
@@ -78,6 +79,8 @@ public class ServerStorageConfig extends Config {
     }
 
     public enum RequestType {
-        REGISTER, UPDATE, REQUEST;
+        REGISTER,
+        UPDATE,
+        REQUEST;
     }
 }

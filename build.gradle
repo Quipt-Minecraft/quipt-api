@@ -10,9 +10,14 @@ version = "$project_version-$build_status-B$build_number"
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
+
     maven {
-        name = "quipt"
-        url = "https://repo.vanillaflux.com/repository/quipt/"
+        url "https://maven.pkg.github.com/Quipt-Minecraft/quipt"
+        credentials {
+            username = "QuickScythe"
+            password = "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"
+        }
     }
 }
 
@@ -26,11 +31,23 @@ dependencies {
     testImplementation "ch.qos.logback:logback-core:$logback_version"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 
+//    testImplementation "com.github.Quipt-Minecraft.quipt:core:f6896143fc"
+//    testImplementation "com.github.Quipt-Minecraft.quipt:common:f6896143fc"
+
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-web"
     providedRuntime "org.springframework.boot:spring-boot-starter-tomcat"
     implementation "org.json:json:$json_version"
-    implementation "com.quiptmc:quipt-core:$quipt_core_version"
+
+
+//    implementation "com.quiptmc:core:${quipt_minecraft_version}"
+    implementation "com.github.Quipt-Minecraft.quipt:core:f6896143fc"
+
+//    implementation "com.quiptmc:common:${quipt_minecraft_version}"
+    implementation "com.github.Quipt-Minecraft.quipt:common:f6896143fc"
+
+//    implementation "com.quiptmc:quipt-core:$quipt_minecraft_version"
+//    implementation "com.quiptmc:quipt-minecraft-utility:$quipt_minecraft_version"
 }
 
 test {

@@ -7,28 +7,48 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api")
 public class ApiController {
+
+    @PostMapping("/action/{ip}")
+    public String postAction(@PathVariable String ip, @RequestBody String data) {
+        try {
+            JSONObject json = new JSONObject(data);
+            Optional<String> secret = extractSecret(json);
+            return secret.map(s -> new Feedback(QuiptApi.utils.serverManager.action(ip, json), "Sending Action...").json()).orElseGet(() -> new Feedback(Feedback.Result.FAILURE, "Secret not provided").json());
+        } catch (JSONException ex) {
+            return new Feedback(Feedback.Result.FAILURE, "Invalid JSON").json();
+        }
+    }
 
     @PostMapping("/register/{ip}")
     public String registerServer(@PathVariable String ip, @RequestBody String data) {
         try {
             JSONObject json = new JSONObject(data);
-            if (!json.has("secret")) return new Feedback(Feedback.Result.FAILURE, "Secret not provided").json();
-            return new Feedback(QuiptApi.utils.serverManager.register(ip, json.getString("secret")), "Registering Server...").json();
+            Optional<String> secret = extractSecret(json);
+            return secret.map(s -> new Feedback(QuiptApi.utils.serverManager.register(ip, s), "Registering Server...").json()).orElseGet(() -> new Feedback(Feedback.Result.FAILURE, "Secret not provided").json());
         } catch (JSONException ex) {
             return new Feedback(Feedback.Result.FAILURE, "Invalid JSON").json();
         }
+    }
+
+    private Optional<String> extractSecret(JSONObject json) {
+        if(!json.has("secret")) return Optional.empty();
+        if(json.get("secret") instanceof JSONObject) return Optional.of(json.getJSONObject("secret").optString("secret", null));
+        return Optional.of(json.optString("secret", null));
     }
 
     @PostMapping("/update/{ip}")
     public String updateServer(@PathVariable String ip, @RequestBody String data) {
         try {
             JSONObject json = new JSONObject(data);
-            if (!json.has("secret")) return new Feedback(Feedback.Result.FAILURE, "Secret not provided").json();
-            return new Feedback(QuiptApi.utils.serverManager.update(ip, json.getString("secret"), json), "Updating Server...").json();
+            Optional<String> secret = extractSecret(json);
+            return secret.map(s -> new Feedback(QuiptApi.utils.serverManager.update(ip, json), "Updating Server...").json()).orElseGet(() -> new Feedback(Feedback.Result.FAILURE, "Secret not provided").json());
         } catch (JSONException ex) {
+            ex.printStackTrace();
             return new Feedback(Feedback.Result.FAILURE, "Invalid JSON").json();
         }
     }
