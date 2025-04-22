@@ -7,6 +7,7 @@ steps:
       - '--builder=gcr.io/buildpacks/builder:v1'
       - '--network=cloudbuild'
       - '--path=.'
+      - '--env=BP_JVM_VERSION=21.*'
     id: Buildpack
     entrypoint: pack
   - name: gcr.io/cloud-builders/docker
@@ -37,7 +38,7 @@ options:
   substitutionOption: ALLOW_LOOSE
   logging: CLOUD_LOGGING_ONLY
 substitutions:
-  _SERVICE_NAME: quipt-api-test
+  _SERVICE_NAME: quipt-api
   _DEPLOY_REGION: us-central1
   _AR_HOSTNAME: us-central1-docker.pkg.dev
   _TRIGGER_ID: ca3b91b4-7f28-43aa-9f9c-1b7831e54970
