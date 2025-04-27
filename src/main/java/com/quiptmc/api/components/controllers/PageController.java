@@ -1,6 +1,7 @@
 package com.quiptmc.api.components.controllers;
 
 import com.quiptmc.api.QuiptApi;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ public class PageController {
         model.addAttribute("servers", QuiptApi.utils.servers.servers().size());
         model.addAttribute("requestsHandled", QuiptApi.utils.servers.requests().size());
         model.addAttribute("uptime", QuiptApi.utils.uptime.getUptime());
-        model.addAttribute("hardWorkers", 25);
+        model.addAttribute("clients", new JSONObject(QuiptApi.utils.sessions.sessions()).length());
         return "index";
     }
 }

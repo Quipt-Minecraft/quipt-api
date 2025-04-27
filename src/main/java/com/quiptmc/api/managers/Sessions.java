@@ -6,6 +6,8 @@ import com.quiptmc.core.QuiptIntegration;
 import com.quiptmc.core.config.ConfigManager;
 import org.json.JSONObject;
 
+import java.util.Collection;
+
 public class Sessions {
 
     private final SessionStorageConfig config;
@@ -17,6 +19,11 @@ public class Sessions {
     public Feedback.Result update(String uuid, JSONObject json) {
         if (!config.sessions.has(uuid)) config.sessions.put(uuid, new JSONObject());
         config.sessions.getJSONObject(uuid).put(System.currentTimeMillis() + "", json);
+        config.save();
         return Feedback.Result.SUCCESS;
+    }
+
+    public String sessions() {
+        return config.sessions.toString();
     }
 }

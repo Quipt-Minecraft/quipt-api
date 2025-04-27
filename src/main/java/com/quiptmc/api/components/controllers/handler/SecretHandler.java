@@ -7,8 +7,14 @@ import java.util.Optional;
 public class SecretHandler {
 
     protected Optional<String> extractSecret(JSONObject json) {
-        if(!json.has("secret")) return Optional.empty();
-        if(json.get("secret") instanceof JSONObject) return Optional.of(json.getJSONObject("secret").optString("secret", null));
-        return Optional.of(json.optString("secret", null));
+        if(!json.has("secrets") && !json.has("secret")) return Optional.empty();
+        if(json.get("secrets") instanceof JSONObject){
+            String secret = json.getJSONObject("secrets").optString("secret", null);
+            json.remove("secrets");
+            return Optional.ofNullable(secret);
+        }
+        String secret = json.optString("secret", null);
+        json.remove("secret");
+        return Optional.ofNullable(secret);
     }
 }

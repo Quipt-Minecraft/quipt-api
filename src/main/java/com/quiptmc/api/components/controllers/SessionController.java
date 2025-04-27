@@ -19,7 +19,7 @@ public class SessionController extends SecretHandler {
         try {
             JSONObject json = new JSONObject(data);
             Optional<String> secret = extractSecret(json);
-            return secret.map(s -> new Feedback(QuiptApi.utils.sessions.update(uuid, json), "Sending Action...").json()).orElseGet(() -> new Feedback(Feedback.Result.FAILURE, "Secret not provided").json());
+            return secret.map(s -> new Feedback(QuiptApi.utils.sessions.update(uuid, json), "Recording session.").json()).orElseGet(() -> new Feedback(Feedback.Result.FAILURE, "Secret not provided").json());
         } catch (JSONException ex) {
             return new Feedback(Feedback.Result.FAILURE, "Invalid JSON").json();
         }
