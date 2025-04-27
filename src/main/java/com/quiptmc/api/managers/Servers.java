@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class ServerManager {
+public class Servers {
 
     private final ServerStorageConfig config;
 
-    public ServerManager(QuiptIntegration integration){
+    public Servers(QuiptIntegration integration){
         config = ConfigManager.registerConfig(integration, ServerStorageConfig.class);
     }
 

@@ -6,11 +6,11 @@ import com.quiptmc.core.config.ConfigManager;
 
 import java.util.concurrent.TimeUnit;
 
-public class UptimeManager {
+public class Uptime {
 
     private final UptimeStorageConfig config;
 
-    public UptimeManager(QuiptIntegration integration) {
+    public Uptime(QuiptIntegration integration) {
         this.config = ConfigManager.registerConfig(integration, UptimeStorageConfig.class);
         if (config.startUptimeChecker == 0) {
             config.startUptimeChecker = System.currentTimeMillis();
