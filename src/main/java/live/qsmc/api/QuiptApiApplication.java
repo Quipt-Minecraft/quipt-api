@@ -77,12 +77,6 @@ public class QuiptApiApplication extends QuiptIntegration {
             System.exit(0);
         }
 
-        for(File file : new File("").listFiles()){
-            if(file.getName().equalsIgnoreCase(ARTIFACT_PREFIX + storedVersion + ARTIFACT_SUFFIX)){
-                file.delete();
-            }
-        }
-
 
 
         SpringApplication.run(QuiptApiApplication.class, args);
