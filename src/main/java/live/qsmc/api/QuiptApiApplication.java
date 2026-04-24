@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.File;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
 import java.util.Properties;
 
 @SpringBootApplication
@@ -34,6 +35,8 @@ public class QuiptApiApplication extends QuiptIntegration {
             return;
         }
         String storedVersion = properties.getProperty("version");
+        String onlineVersion = storedVersion;
+
 
         HttpResponse<String> responseRaw = NetworkUtils.get(HttpConfig.DEFAULTS, "https://ci.qsmc.live/job/QuiptApi/lastSuccessfulBuild/api/json?pretty=true&tree=artifacts[*]");
         JSONObject response = new JSONObject(responseRaw.body());
@@ -42,11 +45,20 @@ public class QuiptApiApplication extends QuiptIntegration {
             if(raw instanceof JSONObject artifact) {
                 String displayPath = artifact.getString("displayPath");
                 if(displayPath.endsWith("-plain.jar")) continue;
-                String onlineVersion = displayPath.substring("quipt-api-".length(), displayPath.length() - 4);
-                if(onlineVersion.equalsIgnoreCase(storedVersion)) quipt.logger().log("Update Checker", "Quipt API is up to date!");
-                else quipt.logger().log("Update Checker", "Quipt API is outdated! Current: " + storedVersion + ", Online: " + onlineVersion);
+                onlineVersion = displayPath.substring("quipt-api-".length(), displayPath.length() - 4);
+
             }
         }
+        if(onlineVersion.equalsIgnoreCase(storedVersion)) quipt.logger().log("Update Checker", "Quipt API is up to date!");
+        else{
+            quipt.logger().log("Update Checker", "Quipt API is outdated! Current: " + storedVersion + ", Online: " + onlineVersion);
+            Path target = new File("quipt-api.jar").toPath();
+            NetworkUtils.get(HttpConfig.DEFAULTS, "https://ci.qsmc.live/job/QuiptApi/lastSuccessfulBuild/artifact/build/libs/quipt-api-"+onlineVersion+".jar", HttpResponse.BodyHandlers.ofFile(target));
+            System.exit(0);
+        }
+
+
+
 
         SpringApplication.run(QuiptApiApplication.class, args);
 
