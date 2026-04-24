@@ -46,6 +46,9 @@ public class QuiptApiApplication extends QuiptIntegration {
         }
         String storedVersion = properties.getProperty("version");
         String onlineVersion = storedVersion;
+
+
+
         syncVersionFile(storedVersion);
         cleanupHomeJars(storedVersion);
 
@@ -74,6 +77,11 @@ public class QuiptApiApplication extends QuiptIntegration {
             System.exit(0);
         }
 
+        for(File file : new File("").listFiles()){
+            if(file.getName().equalsIgnoreCase(ARTIFACT_PREFIX + storedVersion + ARTIFACT_SUFFIX)){
+                file.delete();
+            }
+        }
 
 
 
