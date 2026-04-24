@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.MediaType;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -14,13 +15,13 @@ import java.util.concurrent.TimeUnit;
 class DataController {
 
     @GetMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-    public JSONObject update() {
+    public Map<String, Object> update() {
         TaskScheduler.scheduleAsyncTask(() -> {
             System.exit(0);
         },2, TimeUnit.SECONDS);
         JSONObject json = new JSONObject();
         json.put("message", "Update in progress...");
-        return json;
+        return json.toMap();
     }
 
     @RequestMapping("/download")
