@@ -1,11 +1,8 @@
 package live.qsmc.api;
 
+import live.qsmc.api.util.Utils;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,22 +18,15 @@ import java.util.Map;
 class FileController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> upload(
-            @RequestParam("secret") String secret,
-            @RequestParam("file") MultipartFile file
-    ) {
-        if (!hasValidSecret(secret))
-            return Map.of("error", "Invalid secret");
-        if (file.isEmpty())
-            return Map.of("error", "File is required");
+    public Map<String, Object> upload(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+                                      @RequestParam("file") MultipartFile file) {
+        Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
+        if(!passwordValidation.isEmpty()) return passwordValidation;
+        if (file.isEmpty()) return Map.of("error", "File is required");
 
         try {
             Path target = saveFile(file);
-            return Map.of(
-                    "message", "File uploaded successfully",
-                    "file", target.getFileName().toString(),
-                    "path", target.toString()
-            );
+            return Map.of("message", "File uploaded successfully", "file", target.getFileName().toString(), "path", target.toString());
         } catch (IllegalArgumentException e) {
             return Map.of("error", e.getMessage());
         } catch (IOException e) {
@@ -45,14 +35,11 @@ class FileController {
     }
 
     @PostMapping(value = "/upload-multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> uploadMultiple(
-            @RequestParam("secret") String secret,
-            @RequestParam("files") MultipartFile[] files
-    ) {
-        if (!hasValidSecret(secret))
-            return Map.of("error", "Invalid secret");
-        if (files == null || files.length == 0)
-            return Map.of("error", "At least one file is required");
+    public Map<String, Object> uploadMultiple(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+                                              @RequestParam("files") MultipartFile[] files) {
+        Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
+        if(!passwordValidation.isEmpty()) return passwordValidation;
+        if (files == null || files.length == 0) return Map.of("error", "At least one file is required");
 
         List<String> uploaded = new ArrayList<>();
         List<String> failed = new ArrayList<>();
@@ -70,11 +57,7 @@ class FileController {
             }
         }
 
-        return Map.of(
-                "message", "Upload completed",
-                "uploaded", uploaded,
-                "failed", failed
-        );
+        return Map.of("message", "Upload completed", "uploaded", uploaded, "failed", failed);
     }
 
     @RequestMapping("/download")
@@ -82,17 +65,11 @@ class FileController {
         return "download";
     }
 
-    private static boolean hasValidSecret(String secret) {
-        QuiptApiApplication app = QuiptApiApplication.api();
-        return app != null && secret != null && secret.equals(app.config().secret);
-    }
-
     private static Path saveFile(MultipartFile file) throws IOException {
         String filename = sanitizeFilename(file.getOriginalFilename());
         Path uploadDirectory = resolveUploadDirectory();
         Path target = uploadDirectory.resolve(filename).normalize();
-        if (!target.startsWith(uploadDirectory))
-            throw new IllegalArgumentException("Invalid file path");
+        if (!target.startsWith(uploadDirectory)) throw new IllegalArgumentException("Invalid file path");
 
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
         return target;
@@ -106,8 +83,7 @@ class FileController {
         int lastSlash = normalized.lastIndexOf('/');
         String filename = (lastSlash >= 0 ? normalized.substring(lastSlash + 1) : normalized).trim();
         filename = filename.replaceAll("[^A-Za-z0-9._-]", "_");
-        if (filename.isBlank())
-            throw new IllegalArgumentException("File name is invalid");
+        if (filename.isBlank()) throw new IllegalArgumentException("File name is invalid");
         return filename;
     }
 

@@ -1,10 +1,9 @@
 package live.qsmc.api;
 
-import live.qsmc.api.config.DefaultConfig;
+import live.qsmc.api.util.Utils;
 import live.qsmc.core2.utils.TaskScheduler;
-import org.json.JSONObject;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -14,16 +13,10 @@ import java.util.concurrent.TimeUnit;
 class DataController {
 
     @RequestMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> update(@RequestBody(required = false) String body) {
-        if(body == null || body.isBlank())
-            return Map.of("error", "Request body is required in json format");
-        if(!body.startsWith("{") || !body.endsWith("}"))
-            return Map.of("error", "Request body must be in json format");
-        JSONObject json = new JSONObject(body);
-        if(!json.has("secret"))
-            return Map.of("error", "Secret is required");
-        if(!json.getString("secret").equals(QuiptApiApplication.api().config().secret))
-            return Map.of("error", "Invalid secret");
+    public Map<String, Object> update(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
+        if (!passwordValidation.isEmpty()) return passwordValidation;
+
         TaskScheduler.scheduleAsyncTask(() -> {
             System.exit(0);
         },2, TimeUnit.SECONDS);
