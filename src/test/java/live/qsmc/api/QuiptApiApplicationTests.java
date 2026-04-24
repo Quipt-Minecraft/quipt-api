@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -27,6 +29,17 @@ class QuiptApiApplicationTests {
         assertFalse(QuiptApiApplication.shouldDeleteJarFile(currentJar, "0.0.1-alpha.3"));
         assertTrue(QuiptApiApplication.shouldDeleteJarFile(oldJar, "0.0.1-alpha.3"));
         assertTrue(QuiptApiApplication.shouldDeleteJarFile(plainJar, "0.0.1-alpha.3"));
+    }
+
+    @Test
+    void sanitizeFilenameRemovesPathAndUnsafeCharacters() {
+        String sanitized = FileController.sanitizeFilename("../my report?.txt");
+        assertEquals("my_report_.txt", sanitized);
+    }
+
+    @Test
+    void sanitizeFilenameRejectsBlankInput() {
+        assertThrows(IllegalArgumentException.class, () -> FileController.sanitizeFilename("   "));
     }
 
 }
