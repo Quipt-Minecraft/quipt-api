@@ -12,11 +12,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.File;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
 @SpringBootApplication
 public class QuiptApiApplication extends QuiptIntegration {
+
+    private static final String VERSION_FILE_NAME = "version.txt";
+    private static final String ARTIFACT_PREFIX = "quipt-api-";
+    private static final String ARTIFACT_SUFFIX = ".jar";
 
     private static QuiptIntegration quipt;
 
@@ -28,32 +33,42 @@ public class QuiptApiApplication extends QuiptIntegration {
 
         //Check for updates
         Properties properties = new Properties();
-        try {
-            properties.load(QuiptApiApplication.class.getResourceAsStream("/application.properties"));
+        try (var resourceStream = QuiptApiApplication.class.getResourceAsStream("/application.properties")) {
+            if (resourceStream == null) {
+                quipt.logger().error("Update Checker", "Failed to load application.properties");
+                return;
+            }
+            properties.load(resourceStream);
         } catch (IOException e) {
             quipt.logger().error("Update Checker", "Failed to load application.properties");
             return;
         }
         String storedVersion = properties.getProperty("version");
         String onlineVersion = storedVersion;
+        syncVersionFile(storedVersion);
 
 
         HttpResponse<String> responseRaw = NetworkUtils.get(HttpConfig.DEFAULTS, "https://ci.qsmc.live/job/QuiptApi/lastSuccessfulBuild/api/json?pretty=true&tree=artifacts[*]");
         JSONObject response = new JSONObject(responseRaw.body());
         JSONArray artifacts = response.getJSONArray("artifacts");
+        boolean versionedArtifactFound = false;
         for(Object raw : artifacts) {
             if(raw instanceof JSONObject artifact) {
-                String displayPath = artifact.getString("displayPath");
-                if(displayPath.endsWith("-plain.jar")) continue;
-                onlineVersion = displayPath.substring("quipt-api-".length(), displayPath.length() - 4);
+                String displayPath = artifact.optString("displayPath", "");
+                if(!displayPath.startsWith(ARTIFACT_PREFIX) || !displayPath.endsWith(ARTIFACT_SUFFIX) || displayPath.endsWith("-plain.jar")) continue;
+                onlineVersion = displayPath.substring(ARTIFACT_PREFIX.length(), displayPath.length() - ARTIFACT_SUFFIX.length());
+                versionedArtifactFound = true;
+                break;
 
             }
         }
+        if(!versionedArtifactFound) quipt.logger().log("Update Checker", "No versioned boot artifact found in Jenkins response; continuing with current version " + storedVersion);
         if(onlineVersion.equalsIgnoreCase(storedVersion)) quipt.logger().log("Update Checker", "Quipt API is up to date!");
         else{
             quipt.logger().log("Update Checker", "Quipt API is outdated! Current: " + storedVersion + ", Online: " + onlineVersion);
-            Path target = new File("quipt-api.jar").toPath();
-            NetworkUtils.get(HttpConfig.DEFAULTS, "https://ci.qsmc.live/job/QuiptApi/lastSuccessfulBuild/artifact/build/libs/quipt-api-"+onlineVersion+".jar", HttpResponse.BodyHandlers.ofFile(target));
+            Path target = new File(ARTIFACT_PREFIX + onlineVersion + ARTIFACT_SUFFIX).toPath();
+            NetworkUtils.get(HttpConfig.DEFAULTS, "https://ci.qsmc.live/job/QuiptApi/lastSuccessfulBuild/artifact/build/libs/" + ARTIFACT_PREFIX + onlineVersion + ARTIFACT_SUFFIX, HttpResponse.BodyHandlers.ofFile(target));
+            syncVersionFile(onlineVersion);
             System.exit(0);
         }
 
@@ -66,6 +81,14 @@ public class QuiptApiApplication extends QuiptIntegration {
 
     public static QuiptIntegration get() {
         return quipt;
+    }
+
+    private static void syncVersionFile(String version) {
+        try {
+            Files.writeString(Path.of(VERSION_FILE_NAME), version);
+        } catch (IOException e) {
+            quipt.logger().log("Update Checker", "Failed to write version file: " + e.getMessage());
+        }
     }
 
     @Override

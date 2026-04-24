@@ -37,6 +37,10 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.named('bootJar') {
+    archiveFileName = "quipt-api-${project.version}.jar"
+}
+
 processResources{
     def props = [version: version]
     filesMatching('application.properties') {
