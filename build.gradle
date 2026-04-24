@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'live.qsmc'
-version = '0.0.1-SNAPSHOT'
+version = "${project_version}-${build_status}.${build_number}"
 description = 'quipt-api'
 
 java {
@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 
     implementation "live.qsmc:core:${quipt_version}"
+    implementation "org.json:json:$json_version"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-restclient-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
@@ -34,4 +35,11 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+processResources{
+    def props = [version: version]
+    filesMatching('application.properties') {
+        expand(props)
+    }
 }
