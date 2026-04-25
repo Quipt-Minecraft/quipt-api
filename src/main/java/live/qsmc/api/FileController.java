@@ -1,7 +1,14 @@
 package live.qsmc.api;
 
 import live.qsmc.api.util.Utils;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +25,7 @@ import java.util.Map;
 class FileController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> upload(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+    public Map<String, Object> upload(@RequestHeader(value = "Authorization") String authorizationHeader,
                                       @RequestParam("file") MultipartFile file) {
         Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
         if(!passwordValidation.isEmpty()) return passwordValidation;
@@ -60,9 +67,45 @@ class FileController {
         return Map.of("message", "Upload completed", "uploaded", uploaded, "failed", failed);
     }
 
-    @RequestMapping("/download")
-    public String download() {
-        return "download";
+    @GetMapping("/download/**")
+    public ResponseEntity<?> download(HttpServletRequest request) {
+        String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+        String pattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+        String relativePath = new AntPathMatcher().extractPathWithinPattern(pattern, fullPath);
+
+        if (relativePath == null || relativePath.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "File path is required"));
+        }
+
+        try {
+            Path uploadDirectory = resolveUploadDirectory();
+            Path target = uploadDirectory.resolve(relativePath).normalize();
+            if (!target.startsWith(uploadDirectory)) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Invalid file path"));
+            }
+
+            if (!Files.exists(target) || !Files.isRegularFile(target)) {
+                return ResponseEntity.status(404).body(Map.of("error", "File not found"));
+            }
+
+            Resource resource = new UrlResource(target.toUri());
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.status(404).body(Map.of("error", "File not found"));
+            }
+
+            String contentType = Files.probeContentType(target);
+            if (contentType == null) {
+                contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + target.getFileName().toString().replace("\"", "") + "\"")
+                    .body(resource);
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to read file: " + e.getMessage()));
+        }
     }
 
     private static Path saveFile(MultipartFile file) throws IOException {
