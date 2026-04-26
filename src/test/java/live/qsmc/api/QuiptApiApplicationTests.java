@@ -18,5 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class QuiptApiApplicationTests {
 
+    @Test
+    void testFileUpload() throws IOException {
+        System.out.println("Hello World");
+    }
 
 }
