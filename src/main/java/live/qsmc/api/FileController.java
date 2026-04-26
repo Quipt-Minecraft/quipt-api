@@ -12,6 +12,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,13 +27,15 @@ class FileController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> upload(@RequestHeader(value = "Authorization") String authorizationHeader,
+                                      @RequestParam(name = "path", required = false) String path,
                                       @RequestParam("file") MultipartFile file) {
+        if (path == null) path = "";
         Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
         if(!passwordValidation.isEmpty()) return passwordValidation;
         if (file.isEmpty()) return Map.of("error", "File is required");
 
         try {
-            Path target = saveFile(file);
+            Path target = saveFile(path, file);
             return Map.of("message", "File uploaded successfully", "file", target.getFileName().toString(), "path", target.toString());
         } catch (IllegalArgumentException e) {
             return Map.of("error", e.getMessage());
@@ -43,7 +46,9 @@ class FileController {
 
     @PostMapping(value = "/upload-multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> uploadMultiple(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+                                              @RequestParam(name = "path", required = false) String path,
                                               @RequestParam("files") MultipartFile[] files) {
+        if (path == null) path = "";
         Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
         if(!passwordValidation.isEmpty()) return passwordValidation;
         if (files == null || files.length == 0) return Map.of("error", "At least one file is required");
@@ -58,7 +63,7 @@ class FileController {
             }
 
             try {
-                uploaded.add(saveFile(file).getFileName().toString());
+                uploaded.add(saveFile(path, file).getFileName().toString());
             } catch (IllegalArgumentException | IOException e) {
                 failed.add(file.getOriginalFilename() + ": " + e.getMessage());
             }
@@ -108,12 +113,15 @@ class FileController {
         }
     }
 
-    private static Path saveFile(MultipartFile file) throws IOException {
+    private static Path saveFile(String path, MultipartFile file) throws IOException {
         String filename = sanitizeFilename(file.getOriginalFilename());
-        Path uploadDirectory = resolveUploadDirectory();
-        Path target = uploadDirectory.resolve(filename).normalize();
-        if (!target.startsWith(uploadDirectory)) throw new IllegalArgumentException("Invalid file path");
+        File containerFolder = new File(QuiptApiApplication.api().folder(), "uploads/" + path);
+        containerFolder.mkdirs();
+//        Path uploadDirectory = resolveUploadDirectory();
 
+//        Path target = uploadDirectory.resolve(path + (path.startsWith("/") ? "" : "/") + filename).normalize();
+//        if (!target.startsWith(uploadDirectory)) throw new IllegalArgumentException("Invalid file path");
+        Path target = containerFolder.toPath().resolve(filename);
         Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
         return target;
     }
