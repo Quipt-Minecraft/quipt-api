@@ -28,16 +28,17 @@ public class AccountData extends ConfigObject {
         super.id = username;
         this.email = email;
         this.password = password;
-        AccountToken token = new AccountToken(verificationToken);
+        AccountToken token = new AccountToken(verificationToken, "Verification token");
         token.permissionsArray.put("registration");
         add(token);
     }
 
     public AccountToken token(String token) {
         if (!tokensCache.containsKey(token)) {
-            if (tokenStorage.has(token))
-                tokensCache.put(token, new AccountToken(token));
-            else return null;
+            if (tokenStorage.has(token)) {
+                JSONObject tokenJson = tokenStorage.getJSONObject(token);
+                tokensCache.put(token, new AccountToken(token, tokenJson.getString("description"), tokenJson.getLong("created"), tokenJson.getLong("expires")));
+            } else return null;
         }
         return tokensCache.get(token);
     }
@@ -45,7 +46,7 @@ public class AccountData extends ConfigObject {
     public AccountPermission permission(String permission) {
         if (!permissionsCache.containsKey(permission)) {
             if (permissionsStorage.has(permission))
-                permissionsCache.put(permission, new AccountPermission(permission, permission));
+                permissionsCache.put(permission, new AccountPermission(permission));
             else return null;
         }
         return permissionsCache.get(permission);
@@ -68,5 +69,13 @@ public class AccountData extends ConfigObject {
 
     public void add(AccountToken accountToken) {
         tokensCache.put(accountToken.id, accountToken);
+    }
+
+    public void remove(AccountToken token) {
+        tokensCache.remove(token.id);
+    }
+
+    public void remove(AccountPermission permission) {
+        permissionsCache.remove(permission.id);
     }
 }

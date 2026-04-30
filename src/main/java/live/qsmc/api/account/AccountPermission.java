@@ -9,11 +9,9 @@ import org.json.JSONObject;
 public class AccountPermission implements JsonSerializable {
 
     String id;
-    String description;
 
-    public AccountPermission(String id, String description) {
+    public AccountPermission(String id) {
         this.id = id;
-        this.description = description;
     }
 
 }

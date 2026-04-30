@@ -5,6 +5,7 @@ import live.qsmc.api.account.AccountStorage;
 import live.qsmc.api.account.AccountToken;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class Utils {
 
@@ -30,5 +31,14 @@ public class Utils {
         if (token == null)
             return Map.of("error", "Invalid secret");
         return Map.of("success", token);
+    }
+
+    public static String generateToken(){
+        AccountStorage storage = QuiptApiApplication.api().configs().config(AccountStorage.class);
+        String token = UUID.randomUUID().toString().replace("-", "");
+        while (storage.token(token) != null) {
+            token = UUID.randomUUID().toString().replace("-", "");
+        }
+        return token;
     }
 }
