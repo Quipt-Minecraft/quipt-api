@@ -1,6 +1,8 @@
 package live.qsmc.api.util;
 
 import live.qsmc.api.QuiptApiApplication;
+import live.qsmc.api.account.AccountStorage;
+import live.qsmc.api.account.AccountToken;
 
 import java.util.Map;
 
@@ -24,9 +26,9 @@ public class Utils {
         if (app == null || app.config() == null)
             return Map.of("error", "Server configuration is unavailable");
 
-        if (!providedSecret.equals(app.config().secret))
+        AccountToken token = app.configs().config(AccountStorage.class).token(providedSecret);
+        if (token == null)
             return Map.of("error", "Invalid secret");
-
-        return Map.of();
+        return Map.of("success", token);
     }
 }

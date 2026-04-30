@@ -1,9 +1,13 @@
 package live.qsmc.api;
 
+import live.qsmc.api.account.AccountData;
+import live.qsmc.api.account.AccountPermission;
+import live.qsmc.api.account.AccountPermissions;
 import live.qsmc.api.config.DefaultConfig;
 import live.qsmc.api.account.AccountStorage;
 import live.qsmc.core2.Quipt;
 import live.qsmc.core2.QuiptIntegration;
+import live.qsmc.core2.config.factories.GenericFactory;
 import live.qsmc.core2.utils.net.HttpConfig;
 import live.qsmc.core2.utils.net.NetworkUtils;
 import org.json.JSONArray;
@@ -12,6 +16,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.nio.file.DirectoryStream;
@@ -28,7 +33,7 @@ public class QuiptApiApplication extends QuiptIntegration {
 
     private static QuiptApiApplication api;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         //Enable Quipt API integration
         api = new QuiptApiApplication();
         Quipt.INSTANCE.enable(api);
@@ -94,6 +99,7 @@ public class QuiptApiApplication extends QuiptIntegration {
                 System.exit(0);
             }
         } else api.logger().log("Update Checker", "Skipping update check");
+        api.configs().factory(new GenericFactory<>(AccountData.class));
         api.configs().register(DefaultConfig.class);
         api.configs().register(AccountStorage.class);
 

@@ -15,7 +15,7 @@ class DataController {
     @RequestMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> update(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
-        if (!passwordValidation.isEmpty()) return passwordValidation;
+        if (!passwordValidation.containsKey("success")) return passwordValidation;
 
         TaskScheduler.scheduleAsyncTask(() -> {
             System.exit(0);

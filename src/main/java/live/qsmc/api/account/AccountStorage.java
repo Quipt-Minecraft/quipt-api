@@ -18,4 +18,20 @@ public class AccountStorage extends Config {
         super(file, name, extension, integration);
         accounts = new ConfigMap<>(integration);
     }
+
+    @Override
+    public void save() {
+        for(AccountData account : accounts.values())
+            account.bake();
+
+        super.save();
+    }
+
+    public AccountToken token(String token) {
+        for(AccountData account : accounts.values()){
+            if(account.tokenStorage.has(token))
+                return account.token(token);
+        }
+        return null;
+    }
 }

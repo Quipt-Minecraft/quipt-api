@@ -32,7 +32,7 @@ class FileController {
                                       @RequestParam("file") MultipartFile file) {
         if (path == null) path = "";
         Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
-        if(!passwordValidation.isEmpty()) return passwordValidation;
+        if (!passwordValidation.containsKey("success")) return passwordValidation;
         if (file.isEmpty()) return Map.of("error", "File is required");
 
         try {
@@ -51,7 +51,7 @@ class FileController {
                                               @RequestParam("files") MultipartFile[] files) {
         if (path == null) path = "";
         Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
-        if(!passwordValidation.isEmpty()) return passwordValidation;
+        if (!passwordValidation.containsKey("success")) return passwordValidation;
         if (files == null || files.length == 0) return Map.of("error", "At least one file is required");
 
         List<String> uploaded = new ArrayList<>();
