@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -20,8 +19,8 @@ public class AccountController {
 
     private final VerificationEmailService verificationEmailService;
     private final PasswordEncoder passwordEncoder;
-    //String = TokenId
-    private final Map<AccountToken, AccountData> verificationTokens = new HashMap<>();
+    private final VerificationTokens verificationTokens = new VerificationTokens();
+
 
     public AccountController(VerificationEmailService verificationEmailService, PasswordEncoder passwordEncoder) {
         this.verificationEmailService = verificationEmailService;
@@ -32,8 +31,9 @@ public class AccountController {
     public ApiResponse<Object> verify(@RequestParam("token") String token, @RequestParam("email") String email) {
         if (token == null || email == null || token.isBlank() || email.isBlank())
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Token and email are required");
-        if (!verificationTokens.containsKey(token)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Invalid token");
-        AccountData account = verificationTokens.get(token);
+        if (!verificationTokens.has(token)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Invalid token");
+        AccountData account = verificationTokens.account(token);
+        if (account == null) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Account not found");
         if (!account.email.equals(email)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Invalid email");
 
         AccountStorage storage = QuiptApiApplication.api().configs().config(AccountStorage.class);
@@ -179,5 +179,38 @@ public class AccountController {
         return new ApiResponse<>(ApiResponse.Status.SUCCESS, "Edit successful");
     }
 
+    private static class VerificationTokens {
+        private final Map<AccountToken, AccountData> verificationTokens = new HashMap<>();
+
+        public void put(AccountToken token, AccountData account) {
+            verificationTokens.put(token, account);
+        }
+
+        public AccountData account(String token) {
+            for (AccountToken t : verificationTokens.keySet()) {
+                if (t.id.equals(token)) return verificationTokens.get(t);
+            }
+            return null;
+        }
+
+        public AccountToken token(String token){
+            for (AccountToken t : verificationTokens.keySet()) {
+                if (t.id.equals(token)) return t;
+            }
+            return null;
+        }
+
+        public boolean has(String token) {
+            return token(token) != null;
+        }
+
+        public void remove(AccountToken token) {
+            verificationTokens.remove(token);
+        }
+
+        public void remove(String token) {
+            remove(token(token));
+        }
+    }
 
 }
