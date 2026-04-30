@@ -53,8 +53,6 @@ public class AccountData extends ConfigObject {
     }
 
     public void bake() {
-        tokenStorage = new JSONObject();
-        permissionsStorage = new JSONObject();
         for (AccountToken token : tokensCache.values()) {
             tokenStorage.put(token.id, token.json());
         }
@@ -73,9 +71,11 @@ public class AccountData extends ConfigObject {
 
     public void remove(AccountToken token) {
         tokensCache.remove(token.id);
+        tokenStorage.remove(token.id);
     }
 
     public void remove(AccountPermission permission) {
         permissionsCache.remove(permission.id);
+        permissionsStorage.remove(permission.id);
     }
 }

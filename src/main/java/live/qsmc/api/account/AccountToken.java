@@ -7,11 +7,11 @@ import java.util.concurrent.TimeUnit;
 
 public class AccountToken implements JsonSerializable {
 
-    final String id;
-    final String description;
-    final JSONArray permissionsArray = new JSONArray();
-    final long created;
-    final long expires;
+    public String id;
+    public String description;
+    public JSONArray permissionsArray = new JSONArray();
+    public long created;
+    public long expires;
 
     public AccountToken(String token, String description) {
         this.id = token;
