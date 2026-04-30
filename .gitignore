@@ -38,3 +38,5 @@ out/
 /.env
 /quipt/
 /src/main/resources/application-local.properties
+/http-client.env.json
+/client.http

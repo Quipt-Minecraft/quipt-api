@@ -34,4 +34,20 @@ public class AccountStorage extends Config {
         }
         return null;
     }
+
+    public AccountData account(String id) {
+        for(AccountData account : accounts.values()){
+            if(account.id.equals(id))
+                return account;
+        }
+        return null;
+    }
+
+    public AccountData account(AccountToken token) {
+        for(AccountData account : accounts.values()){
+            if(account.token(token.id) != null)
+                return account;
+        }
+        return null;
+    }
 }

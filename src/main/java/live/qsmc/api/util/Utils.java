@@ -28,10 +28,12 @@ public class Utils {
         if (app == null || app.config() == null)
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Server configuration is unavailable");
 
-        AccountToken token = app.configs().config(AccountStorage.class).token(providedSecret);
+        AccountStorage storage = app.configs().config(AccountStorage.class);
+
+        AccountToken token = storage.token(providedSecret);
         if (token == null)
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Invalid secret");
-        return new ApiResponse<>(ApiResponse.Status.SUCCESS, token);
+        return new ApiResponse<>(ApiResponse.Status.SUCCESS, storage.account(token));
     }
 
     public static String generateToken(){
