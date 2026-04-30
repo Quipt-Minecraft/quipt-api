@@ -91,7 +91,7 @@ public class AccountController {
     @RequestMapping(value = "/edit", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Object> edit(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody(required = false) String body) {
         ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
-        if (!response.isSuccess()) return response;
+        if (response.isFailure()) return response;
         if(!(response.data instanceof AccountData accountData))
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Account data is not available");
 

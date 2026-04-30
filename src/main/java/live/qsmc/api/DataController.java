@@ -16,7 +16,7 @@ class DataController {
     @RequestMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Object> update(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
-        if (!response.isSuccess()) return response;
+        if (response.isFailure()) return response;
 
         TaskScheduler.scheduleAsyncTask(() -> {
             System.exit(0);

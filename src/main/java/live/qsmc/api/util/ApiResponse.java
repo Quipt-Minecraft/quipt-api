@@ -29,6 +29,10 @@ public class ApiResponse<T> extends HttpEntity<Map<String, Object>> implements J
         return status == Status.SUCCESS;
     }
 
+    public boolean isFailure() {
+        return status == Status.FAILURE;
+    }
+
     public enum Status {
         SUCCESS,
         FAILURE,

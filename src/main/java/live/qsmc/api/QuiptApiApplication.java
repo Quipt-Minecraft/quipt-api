@@ -1,8 +1,6 @@
 package live.qsmc.api;
 
 import live.qsmc.api.account.AccountData;
-import live.qsmc.api.account.AccountPermission;
-import live.qsmc.api.account.AccountPermissions;
 import live.qsmc.api.config.DefaultConfig;
 import live.qsmc.api.account.AccountStorage;
 import live.qsmc.core2.Quipt;

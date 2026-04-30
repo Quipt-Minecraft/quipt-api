@@ -34,7 +34,7 @@ class FileController {
                               @RequestParam("file") MultipartFile file) {
         if (path == null) path = "";
         ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
-        if (!response.isSuccess()) return response;
+        if (response.isFailure()) return response;
         if (file.isEmpty()) return new ApiResponse<>(ApiResponse.Status.FAILURE, "File is required");
 
         try {
@@ -57,7 +57,7 @@ class FileController {
                                               @RequestParam("files") MultipartFile[] files) {
         if (path == null) path = "";
         ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
-        if (!response.isSuccess()) return response;
+        if (response.isFailure()) return response;
         if (files == null || files.length == 0) return new ApiResponse<>(ApiResponse.Status.FAILURE, "At least one file is required");
 
         List<String> uploaded = new ArrayList<>();
