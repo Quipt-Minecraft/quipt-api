@@ -1,7 +1,9 @@
 package live.qsmc.api;
 
+import live.qsmc.api.util.ApiResponse;
 import live.qsmc.api.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
+import org.json.JSONObject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -27,32 +29,36 @@ import java.util.Map;
 class FileController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> upload(@RequestHeader(value = "Authorization") String authorizationHeader,
-                                      @RequestParam(name = "path", required = false) String path,
-                                      @RequestParam("file") MultipartFile file) {
+    public ApiResponse<Object> upload(@RequestHeader(value = "Authorization") String authorizationHeader,
+                              @RequestParam(name = "path", required = false) String path,
+                              @RequestParam("file") MultipartFile file) {
         if (path == null) path = "";
-        Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
-        if (!passwordValidation.containsKey("success")) return passwordValidation;
-        if (file.isEmpty()) return Map.of("error", "File is required");
+        ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
+        if (!response.isSuccess()) return response;
+        if (file.isEmpty()) return new ApiResponse<>(ApiResponse.Status.FAILURE, "File is required");
 
         try {
             Path target = saveFile(path, file);
-            return Map.of("message", "File uploaded successfully", "file", target.getFileName().toString(), "path", target.toString());
+            JSONObject responseObject = new JSONObject();
+            responseObject.put("message", "File uploaded successfully");
+            responseObject.put("file", target.getFileName().toString());
+            responseObject.put("path", target.toString());
+            return new ApiResponse<>(ApiResponse.Status.SUCCESS, responseObject);
         } catch (IllegalArgumentException e) {
-            return Map.of("error", e.getMessage());
+            return new ApiResponse<>(ApiResponse.Status.FAILURE, e.getMessage());
         } catch (IOException e) {
-            return Map.of("error", "Failed to upload file: " + e.getMessage());
+            return new ApiResponse<>(ApiResponse.Status.FAILURE, "Failed to upload file: " + e.getMessage());
         }
     }
 
     @PostMapping(value = "/upload-multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> uploadMultiple(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+    public ApiResponse<Object> uploadMultiple(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
                                               @RequestParam(name = "path", required = false) String path,
                                               @RequestParam("files") MultipartFile[] files) {
         if (path == null) path = "";
-        Map<String, Object> passwordValidation = Utils.validateAuthorizationHeader(authorizationHeader);
-        if (!passwordValidation.containsKey("success")) return passwordValidation;
-        if (files == null || files.length == 0) return Map.of("error", "At least one file is required");
+        ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
+        if (!response.isSuccess()) return response;
+        if (files == null || files.length == 0) return new ApiResponse<>(ApiResponse.Status.FAILURE, "At least one file is required");
 
         List<String> uploaded = new ArrayList<>();
         List<String> failed = new ArrayList<>();
@@ -70,7 +76,11 @@ class FileController {
             }
         }
 
-        return Map.of("message", "Upload completed", "uploaded", uploaded, "failed", failed);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("uploaded", uploaded);
+        responseObject.put("failed", failed);
+        responseObject.put("message", "Upload completed");
+        return new ApiResponse<>(ApiResponse.Status.SUCCESS, responseObject);
     }
 
     @GetMapping("/download/**")
