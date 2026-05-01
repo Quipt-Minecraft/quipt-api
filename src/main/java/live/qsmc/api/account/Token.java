@@ -5,7 +5,7 @@ import org.json.JSONArray;
 
 import java.util.concurrent.TimeUnit;
 
-public class AccountToken implements JsonSerializable {
+public class Token implements JsonSerializable {
 
     public String id;
     public String description;
@@ -13,14 +13,14 @@ public class AccountToken implements JsonSerializable {
     public long created;
     public long expires;
 
-    public AccountToken(String token, String description) {
+    public Token(String token, String description) {
         this.id = token;
         this.description = description;
         this.created = System.currentTimeMillis();
         this.expires = created + TimeUnit.MILLISECONDS.convert(30, TimeUnit.DAYS);
     }
 
-    public AccountToken(String token, String description, long created, long expires) {
+    public Token(String token, String description, long created, long expires) {
         this.id = token;
         this.description = description;
         this.created = created;

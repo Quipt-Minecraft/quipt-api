@@ -1,4 +1,4 @@
-package live.qsmc.api.account;
+package live.qsmc.api.spring.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

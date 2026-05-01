@@ -1,7 +1,6 @@
 package live.qsmc.api;
 
 import live.qsmc.api.account.AccountData;
-import live.qsmc.api.config.DefaultConfig;
 import live.qsmc.api.account.AccountStorage;
 import live.qsmc.core2.Quipt;
 import live.qsmc.core2.QuiptIntegration;
@@ -98,7 +97,6 @@ public class QuiptApiApplication extends QuiptIntegration {
             }
         } else api.logger().log("Update Checker", "Skipping update check");
         api.configs().factory(new GenericFactory<>(AccountData.class));
-        api.configs().register(DefaultConfig.class);
         api.configs().register(AccountStorage.class);
 
 
@@ -106,9 +104,6 @@ public class QuiptApiApplication extends QuiptIntegration {
 
     }
 
-    public DefaultConfig config() {
-        return api.configs().config(DefaultConfig.class);
-    }
 
     public static QuiptApiApplication api() {
         return api;

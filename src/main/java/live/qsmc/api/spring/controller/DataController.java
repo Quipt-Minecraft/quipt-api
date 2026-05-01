@@ -1,12 +1,11 @@
-package live.qsmc.api;
+package live.qsmc.api.spring.controller;
 
-import live.qsmc.api.util.ApiResponse;
 import live.qsmc.api.util.Utils;
 import live.qsmc.core2.utils.TaskScheduler;
+import live.qsmc.core2.utils.net.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -14,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 class DataController {
 
     @RequestMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<Object> update(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
-        ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
+    public ApiResponse<?> update(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        ApiResponse<?> response = Utils.validateAuthorizationHeader(authorizationHeader);
         if (response.isFailure()) return response;
 
         TaskScheduler.scheduleAsyncTask(() -> {

@@ -27,7 +27,7 @@ public class AccountStorage extends Config {
         super.save();
     }
 
-    public AccountToken token(String token) {
+    public Token token(String token) {
         for(AccountData account : accounts.values()){
             if(account.tokenStorage.has(token))
                 return account.token(token);
@@ -43,7 +43,7 @@ public class AccountStorage extends Config {
         return null;
     }
 
-    public AccountData account(AccountToken token) {
+    public AccountData account(Token token) {
         for(AccountData account : accounts.values()){
             if(account.token(token.id) != null)
                 return account;

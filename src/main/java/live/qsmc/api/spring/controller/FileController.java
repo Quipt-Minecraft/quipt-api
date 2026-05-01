@@ -1,8 +1,9 @@
-package live.qsmc.api;
+package live.qsmc.api.spring.controller;
 
-import live.qsmc.api.util.ApiResponse;
+import live.qsmc.api.QuiptApiApplication;
 import live.qsmc.api.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
+import live.qsmc.core2.utils.net.ApiResponse;
 import org.json.JSONObject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -14,7 +15,6 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,11 +29,11 @@ import java.util.Map;
 class FileController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<Object> upload(@RequestHeader(value = "Authorization") String authorizationHeader,
-                              @RequestParam(name = "path", required = false) String path,
-                              @RequestParam("file") MultipartFile file) {
+    public ApiResponse<?> upload(@RequestHeader(value = "Authorization") String authorizationHeader,
+                                      @RequestParam(name = "path", required = false) String path,
+                                      @RequestParam("file") MultipartFile file) {
         if (path == null) path = "";
-        ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
+        ApiResponse<?> response = Utils.validateAuthorizationHeader(authorizationHeader);
         if (response.isFailure()) return response;
         if (file.isEmpty()) return new ApiResponse<>(ApiResponse.Status.FAILURE, "File is required");
 
@@ -52,11 +52,11 @@ class FileController {
     }
 
     @PostMapping(value = "/upload-multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<Object> uploadMultiple(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
-                                              @RequestParam(name = "path", required = false) String path,
-                                              @RequestParam("files") MultipartFile[] files) {
+    public ApiResponse<?> uploadMultiple(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+                                                    @RequestParam(name = "path", required = false) String path,
+                                                    @RequestParam("files") MultipartFile[] files) {
         if (path == null) path = "";
-        ApiResponse<Object> response = Utils.validateAuthorizationHeader(authorizationHeader);
+        ApiResponse<?> response = Utils.validateAuthorizationHeader(authorizationHeader);
         if (response.isFailure()) return response;
         if (files == null || files.length == 0) return new ApiResponse<>(ApiResponse.Status.FAILURE, "At least one file is required");
 
@@ -89,7 +89,7 @@ class FileController {
         String pattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String relativePath = new AntPathMatcher().extractPathWithinPattern(pattern, fullPath);
 
-        if (relativePath == null || relativePath.isBlank()) {
+        if (relativePath.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("error", "File path is required"));
         }
 
