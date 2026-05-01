@@ -51,22 +51,23 @@ public class AccountController {
 
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<?> register(@RequestBody(required = false) String body) {
-        if (body == null || body.isBlank()) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body is required in json format");
+        if (body == null || body.isBlank())
+            return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body is required in json format");
         JSONObject json;
         try {
             json = new JSONObject(body);
         } catch (Exception e) {
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body must be in json format");
         }
-        if (!json.has("username")) new ApiResponse<>(ApiResponse.Status.FAILURE, "'username' field is required");
-        if (!json.has("password")) new ApiResponse<>(ApiResponse.Status.FAILURE, "'password' field is required");
-        if (!json.has("email")) new ApiResponse<>(ApiResponse.Status.FAILURE, "'email' field is required");
-        if(!(json.get("username") instanceof String username) || !(json.get("email") instanceof String) || !(json.get("password") instanceof String password))
+        if (!json.has("username")) return new ApiResponse<>(ApiResponse.Status.FAILURE, "'username' field is required");
+        if (!json.has("password")) return new ApiResponse<>(ApiResponse.Status.FAILURE, "'password' field is required");
+        if (!json.has("email")) return new ApiResponse<>(ApiResponse.Status.FAILURE, "'email' field is required");
+        if (!(json.get("username") instanceof String username) || !(json.get("email") instanceof String) || !(json.get("password") instanceof String password))
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "'username', 'email' and 'password' fields must be strings");
         String email = json.getString("email").toLowerCase(Locale.ROOT);
-        if(invalidEmail(email)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Invalid email format");
+        if (invalidEmail(email)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Invalid email format");
         AccountStorage storage = QuiptApiApplication.api().configs().config(AccountStorage.class);
-        for(AccountData account : storage.accounts.values()) {
+        for (AccountData account : storage.accounts.values()) {
             if (account.id.equals(username)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Username is already taken");
             if (account.email.equals(email)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Email is already in use");
         }
@@ -96,9 +97,9 @@ public class AccountController {
     }
 
     private boolean invalidEmail(String email) {
-        if(!email.contains("@") || !email.contains(".")) return true;
-        for(String tld : allowedTlds) {
-            if(email.endsWith("." + tld)) return false;
+        if (!email.contains("@") || !email.contains(".")) return true;
+        for (String tld : allowedTlds) {
+            if (email.endsWith("." + tld)) return false;
         }
         return true;
     }
@@ -107,9 +108,8 @@ public class AccountController {
     public ApiResponse<?> edit(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody(required = false) String body) {
         ApiResponse<?> response = Utils.validateAuthorizationHeader(authorizationHeader);
         if (response.isFailure()) return new ApiResponse<>(ApiResponse.Status.FAILURE, response.data());
-        if(!(response.data() instanceof AccountData accountData))
+        if (!(response.data() instanceof AccountData accountData))
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Account data is not available");
-
 
         if (body == null || body.isBlank())
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body is required in json format");
@@ -128,16 +128,14 @@ public class AccountController {
             case "add_permission" -> {
                 if (!json.has("permission"))
                     return new ApiResponse<>(ApiResponse.Status.FAILURE, "'permission' field is required for add_permission action");
-                if(!json.has("user"))
+                if (!json.has("user"))
                     return new ApiResponse<>(ApiResponse.Status.FAILURE, "'user' field is required for add_permission action");
-                if(!(json.getString("permission") instanceof String permission))
-                    return new ApiResponse<>(ApiResponse.Status.FAILURE, "'permission' field must be a string for add_permission action");
-                if(!(json.getString("user") instanceof String user))
-                    return new ApiResponse<>(ApiResponse.Status.FAILURE, "'user' field must be a string for add_permission action");
+                String permission = json.getString("permission");
+                String user = json.getString("user");
                 AccountData targetAccount = storage.account(user);
-                if(targetAccount == null)
+                if (targetAccount == null)
                     return new ApiResponse<>(ApiResponse.Status.FAILURE, "User " + user + " not found for add_permission action");
-                if(accountData.permission(permission) == null)
+                if (accountData.permission(permission) == null)
                     return new ApiResponse<>(ApiResponse.Status.FAILURE, "You don't have this permission to give.");
 
                 targetAccount.add(new Permission(permission));
@@ -148,18 +146,17 @@ public class AccountController {
                     return new ApiResponse<>(ApiResponse.Status.FAILURE, "'description' field is required for create_token action");
                 if (!json.has("permissions"))
                     return new ApiResponse<>(ApiResponse.Status.FAILURE, "'permissions' field is required for create_token action");
-                if (!(json.getString("description") instanceof String description))
-                    return new ApiResponse<>(ApiResponse.Status.FAILURE, "'description' field must be a string for create_token action");
                 if (!(json.get("permissions") instanceof JSONArray permissionsJson))
                     return new ApiResponse<>(ApiResponse.Status.FAILURE, "'permissions' field must be a string array for create_token action");
+                String description = json.getString("description");
                 JSONObject responseObject = new JSONObject();
                 List<String> permissions = new ArrayList<>();
 
                 for (int i = 0; i < permissionsJson.length(); i++) {
-                    if (accountData.permission(permissionsJson.getString(i)) != null)
+                    if (accountData.permission(permissionsJson.getString(i)) != null) {
                         permissions.add(permissionsJson.getString(i));
-                    else {
-                        if(!responseObject.has("invalid_permissions")) responseObject.put("invalid_permissions", new JSONArray());
+                    } else {
+                        if (!responseObject.has("invalid_permissions")) responseObject.put("invalid_permissions", new JSONArray());
                         JSONArray invalidPermissions = responseObject.getJSONArray("invalid_permissions");
                         JSONObject invalidPermission = new JSONObject();
                         invalidPermission.put("permission", permissionsJson.getString(i));
@@ -167,7 +164,7 @@ public class AccountController {
                         invalidPermissions.put(invalidPermission);
                     }
                 }
-                if(permissions.isEmpty())
+                if (permissions.isEmpty())
                     return new ApiResponse<>(ApiResponse.Status.FAILURE, responseObject.put("error", "No valid permissions provided."));
 
                 String tokenId = Utils.generateToken();
@@ -175,7 +172,7 @@ public class AccountController {
                 responseObject.put("token", tokenId);
                 responseObject.put("description", description);
 
-                Token token = new Token(tokenId, json.getString("description"));
+                Token token = new Token(tokenId, description);
                 for (String permission : permissions) {
                     token.permissionsArray.put(permission);
                     permissionsApplied.put(permission);
@@ -185,7 +182,6 @@ public class AccountController {
                 accountData.add(token);
                 storage.save();
                 return new ApiResponse<>(ApiResponse.Status.SUCCESS, responseObject.put("raw_token", token.json()));
-
             }
             default -> {
                 return new ApiResponse<>(ApiResponse.Status.FAILURE, "Unsupported action: " + action);
@@ -208,7 +204,7 @@ public class AccountController {
             return null;
         }
 
-        public Token token(String token){
+        public Token token(String token) {
             for (Token t : verificationTokens.keySet()) {
                 if (t.id.equals(token)) return t;
             }
