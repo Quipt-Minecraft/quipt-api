@@ -29,8 +29,9 @@ import java.util.Map;
 class TiltifyController {
 
     @RequestMapping(value = "/verify", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<?> verify() {
-        return new ApiResponse<>(ApiResponse.Status.SUCCESS, "Tiltify verification successful");
+    public ApiResponse<?> verify(@RequestParam(value = "code", required = false) String code) {
+        if (code == null || code.isBlank()) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Code was not provided");
+        return new ApiResponse<>(ApiResponse.Status.SUCCESS, code);
     }
 
 }
