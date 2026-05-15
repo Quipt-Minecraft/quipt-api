@@ -28,7 +28,7 @@ import java.util.Map;
 @RequestMapping("/tiltify")
 class TiltifyController {
 
-    @RequestMapping(value = "/verify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/verify", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<?> verify() {
         return new ApiResponse<>(ApiResponse.Status.SUCCESS, "Tiltify verification successful");
     }

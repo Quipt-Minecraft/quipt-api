@@ -20,7 +20,7 @@ import java.util.*;
 public class AccountController {
 
     public static final String[] allowedTlds = {"com", "net", "org", "live", "io", "dev", "app"};
-
+\
     private final VerificationEmailService verificationEmailService;
     private final VerificationTokens verificationTokens = new VerificationTokens();
 
