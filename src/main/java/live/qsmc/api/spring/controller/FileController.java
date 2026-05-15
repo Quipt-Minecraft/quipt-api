@@ -3,7 +3,7 @@ package live.qsmc.api.spring.controller;
 import live.qsmc.api.QuiptApiApplication;
 import live.qsmc.api.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
-import live.qsmc.core2.utils.net.ApiResponse;
+import live.qsmc.quipt.core.utils.net.ApiResponse;
 import org.json.JSONObject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -53,8 +53,8 @@ class FileController {
 
     @PostMapping(value = "/upload-multiple", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<?> uploadMultiple(@RequestHeader(value = "Authorization", required = false) String authorizationHeader,
-                                                    @RequestParam(name = "path", required = false) String path,
-                                                    @RequestParam("files") MultipartFile[] files) {
+                                         @RequestParam(name = "path", required = false) String path,
+                                         @RequestParam("files") MultipartFile[] files) {
         if (path == null) path = "";
         ApiResponse<?> response = Utils.validateAuthorizationHeader(authorizationHeader);
         if (response.isFailure()) return response;

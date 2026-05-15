@@ -3,8 +3,8 @@ package live.qsmc.api.util;
 import live.qsmc.api.QuiptApiApplication;
 import live.qsmc.api.account.AccountStorage;
 import live.qsmc.api.account.Token;
-import live.qsmc.core2.utils.HashUtils;
-import live.qsmc.core2.utils.net.ApiResponse;
+import live.qsmc.quipt.core.utils.HashUtils;
+import live.qsmc.quipt.core.utils.net.ApiResponse;
 
 import java.util.UUID;
 

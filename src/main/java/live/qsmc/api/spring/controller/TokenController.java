@@ -1,7 +1,7 @@
 package live.qsmc.api.spring.controller;
 
 import live.qsmc.api.util.Utils;
-import live.qsmc.core2.utils.net.ApiResponse;
+import live.qsmc.quipt.core.utils.net.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;

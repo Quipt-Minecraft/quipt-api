@@ -28,7 +28,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
 
-    implementation "live.qsmc:core:${quipt_version}"
+    implementation "live.qsmc.quipt:core:${quipt_version}"
     implementation "org.json:json:$json_version"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-restclient-test'

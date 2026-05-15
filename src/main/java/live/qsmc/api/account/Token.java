@@ -1,6 +1,6 @@
 package live.qsmc.api.account;
 
-import live.qsmc.core2.data.JsonSerializable;
+import live.qsmc.quipt.core.data.JsonSerializable;
 import org.json.JSONArray;
 
 import java.util.concurrent.TimeUnit;

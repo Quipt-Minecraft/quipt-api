@@ -1,6 +1,7 @@
 package live.qsmc.api.account;
 
-import live.qsmc.core2.data.JsonSerializable;
+
+import live.qsmc.quipt.core.data.JsonSerializable;
 
 public class Permission implements JsonSerializable {
 

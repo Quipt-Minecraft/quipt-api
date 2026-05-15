@@ -2,11 +2,11 @@ package live.qsmc.api;
 
 import live.qsmc.api.account.AccountData;
 import live.qsmc.api.account.AccountStorage;
-import live.qsmc.core2.Quipt;
-import live.qsmc.core2.QuiptIntegration;
-import live.qsmc.core2.config.factories.GenericFactory;
-import live.qsmc.core2.utils.net.HttpConfig;
-import live.qsmc.core2.utils.net.NetworkUtils;
+import live.qsmc.quipt.core.Quipt;
+import live.qsmc.quipt.core.QuiptIntegration;
+import live.qsmc.quipt.core.config.factories.GenericFactory;
+import live.qsmc.quipt.core.utils.net.HttpConfig;
+import live.qsmc.quipt.core.utils.net.NetworkUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.boot.SpringApplication;

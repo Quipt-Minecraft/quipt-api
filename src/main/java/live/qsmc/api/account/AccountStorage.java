@@ -1,10 +1,9 @@
 package live.qsmc.api.account;
 
-import live.qsmc.core2.QuiptIntegration;
-import live.qsmc.core2.config.Config;
-import live.qsmc.core2.config.ConfigTemplate;
-import live.qsmc.core2.config.ConfigValue;
-import live.qsmc.core2.config.objects.ConfigMap;
+
+import live.qsmc.quipt.core.QuiptIntegration;
+import live.qsmc.quipt.core.config.*;
+import live.qsmc.quipt.core.config.objects.ConfigMap;
 
 import java.io.File;
 

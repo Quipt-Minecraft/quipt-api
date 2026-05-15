@@ -1,7 +1,7 @@
 package live.qsmc.api.account;
 
-import live.qsmc.core2.QuiptIntegration;
-import live.qsmc.core2.config.objects.ConfigObject;
+import live.qsmc.quipt.core.QuiptIntegration;
+import live.qsmc.quipt.core.config.objects.ConfigObject;
 import org.json.JSONObject;
 
 import java.util.HashMap;

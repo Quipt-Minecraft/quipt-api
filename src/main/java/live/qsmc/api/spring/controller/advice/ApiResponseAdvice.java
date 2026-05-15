@@ -1,6 +1,6 @@
 package live.qsmc.api.spring.controller.advice;
 
-import live.qsmc.core2.utils.net.ApiResponse;
+import live.qsmc.quipt.core.utils.net.ApiResponse;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
