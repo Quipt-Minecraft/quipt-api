@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quipt API Documentation — Quick Solutions</title>
+    <meta name="description" content="Official REST API documentation and developer guide for Quick Solutions & Quipt API.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Pastel Green Theme Palette */
+            --bg-base: #0c120f;
+            --bg-surface: #121b16;
+            --bg-surface-elevated: #18241e;
+            --bg-card: rgba(20, 31, 25, 0.75);
+            --bg-card-hover: rgba(26, 41, 33, 0.9);
+            --border: rgba(167, 243, 208, 0.12);
+            --border-highlight: rgba(110, 231, 183, 0.4);
+            --text-primary: #f2fbf6;
+            --text-secondary: #9db2a6;
+            --text-muted: #647d70;
+            
+            /* Pastel Green Accents */
+            --primary: #86efac;
+            --primary-pastel: #a7f3d0;
+            --primary-dark: #34d399;
+            --primary-glow: rgba(134, 239, 172, 0.25);
+            --primary-gradient: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 50%, #34d399 100%);
+            
+            --accent-mint: #6ee7b7;
+            --accent-cyan: #67e8f9;
+            --accent-amber: #fde68a;
+            --accent-rose: #fda4af;
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+            
+            --shadow-subtle: 0 4px 24px -2px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 35px -8px rgba(134, 239, 172, 0.22);
+            
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --sidebar-width: 290px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(134, 239, 172, 0.08), transparent 45%),
+                radial-gradient(circle at 90% 20%, rgba(110, 231, 183, 0.06), transparent 50%),
+                radial-gradient(circle at 50% 85%, rgba(52, 211, 153, 0.05), transparent 45%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+        }
+
+        /* Top Navbar */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12, 18, 15, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            height: 64px;
+        }
+
+        .header-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0c120f;
+            box-shadow: 0 0 16px var(--primary-glow);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-pastel);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 7px 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: #08110b;
+            box-shadow: 0 0 16px rgba(134, 239, 172, 0.3);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(134, 239, 172, 0.45);
+        }
+
+        /* Layout Container */
+        .docs-layout {
+            max-width: 1440px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex: 1;
+            padding: 0 24px;
+            gap: 32px;
+            position: relative;
+        }
+
+        /* Sidebar Navigation */
+        aside.sidebar {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            position: sticky;
+            top: 64px;
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+            padding: 24px 0 40px;
+            border-right: 1px solid var(--border);
+        }
+
+        /* Search input */
+        .search-box {
+            margin-bottom: 24px;
+            padding-right: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            background: rgba(18, 27, 22, 0.8);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-pastel);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-wrapper svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .sidebar-group {
+            margin-bottom: 24px;
+            padding-right: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-left: 12px;
+        }
+
+        .sidebar-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-link:hover {
+            color: var(--text-primary);
+            background: rgba(134, 239, 172, 0.08);
+        }
+
+        .sidebar-link.active {
+            color: var(--primary-pastel);
+            background: rgba(134, 239, 172, 0.12);
+            font-weight: 600;
+            border-left: 3px solid var(--primary-pastel);
+        }
+
+        .badge-method {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-get { background: rgba(52, 211, 153, 0.15); color: #86efac; border: 1px solid rgba(52, 211, 153, 0.3); }
+        .badge-post { background: rgba(103, 232, 249, 0.15); color: #67e8f9; border: 1px solid rgba(103, 232, 249, 0.3); }
+        .badge-any { background: rgba(253, 230, 138, 0.15); color: #fde68a; border: 1px solid rgba(253, 230, 138, 0.3); }
+
+        /* Main Content */
+        main.docs-content {
+            flex: 1;
+            padding: 32px 0 80px;
+            min-width: 0;
+            max-width: 880px;
+        }
+
+        .doc-section {
+            margin-bottom: 56px;
+            scroll-margin-top: 80px;
+        }
+
+        .doc-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .doc-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary-pastel);
+            margin-bottom: 8px;
+        }
+
+        .doc-header h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .doc-header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Documentation Card / Endpoint item */
+        .endpoint-block {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow-subtle);
+            transition: border-color 0.2s ease;
+        }
+
+        .endpoint-block:hover {
+            border-color: var(--border-highlight);
+        }
+
+        .endpoint-header {
+            padding: 18px 24px;
+            background: var(--bg-surface-elevated);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .endpoint-route {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .endpoint-url {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .endpoint-auth {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            background: rgba(253, 230, 138, 0.1);
+            color: #fde68a;
+            border: 1px solid rgba(253, 230, 138, 0.25);
+            font-weight: 600;
+        }
+
+        .endpoint-body {
+            padding: 24px;
+        }
+
+        .endpoint-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        /* Tables for params / body */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+
+        thead {
+            background: rgba(18, 27, 22, 0.9);
+        }
+
+        th {
+            padding: 10px 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .param-name {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--primary-pastel);
+        }
+
+        .param-type {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .param-req {
+            color: #f87171;
+            font-weight: 600;
+        }
+
+        .param-opt {
+            color: var(--text-muted);
+        }
+
+        /* Code snippets / responses inside docs */
+        .code-box {
+            background: #090e0b;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-top: 16px;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: #111a14;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            color: var(--primary-pastel);
+        }
+
+        pre {
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #d1fae5;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .code-key { color: #a7f3d0; }
+        .code-val { color: #fde68a; }
+        .code-bool { color: #f472b6; }
+        .code-str { color: #86efac; }
+
+        /* Callout banner */
+        .callout {
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            margin: 16px 0;
+            display: flex;
+            gap: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .callout-info {
+            background: rgba(134, 239, 172, 0.08);
+            border: 1px solid rgba(134, 239, 172, 0.25);
+            color: #d1fae5;
+        }
+
+        .callout-warn {
+            background: rgba(253, 230, 138, 0.08);
+            border: 1px solid rgba(253, 230, 138, 0.25);
+            color: #fef08a;
+        }
+
+        /* Quick Add Framework Helper */
+        .framework-tip {
+            background: linear-gradient(135deg, rgba(20, 31, 25, 0.9), rgba(14, 23, 18, 0.9));
+            border: 1px dashed var(--border-highlight);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-top: 40px;
+        }
+
+        .framework-tip h3 {
+            color: var(--primary-pastel);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .framework-tip p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            background: #090e0b;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .docs-layout {
+                flex-direction: column;
+            }
+            aside.sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="/" class="brand-link">
+                <div class="brand-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                </div>
+                <span>Quick Solutions <span style="font-weight: 400; color: var(--text-muted);">/ Docs</span></span>
+            </a>
+            <div class="nav-actions">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/docs" class="nav-link" style="color: var(--primary-pastel); font-weight: 600;">API Reference</a>
+                <a href="https://github.com" target="_blank" class="btn btn-primary">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="docs-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="search-box">
+                <div class="search-wrapper">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="endpointSearch" class="search-input" placeholder="Search endpoints...">
+                </div>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">Getting Started</div>
+                <ul class="sidebar-links">
+                    <li><a href="#overview" class="sidebar-link active">Overview & Auth</a></li>
+                    <li><a href="#responses" class="sidebar-link">Response Format</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">Account API</div>
+                <ul class="sidebar-links">
+                    <li>
+                        <a href="#account-register" class="sidebar-link">
+                            <span>Register</span>
+                            <span class="badge-method badge-post">POST</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#account-verify" class="sidebar-link">
+                            <span>Verify Email</span>
+                            <span class="badge-method badge-get">GET</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#account-edit" class="sidebar-link">
+                            <span>Edit Account</span>
+                            <span class="badge-method badge-any">ANY</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">Token API</div>
+                <ul class="sidebar-links">
+                    <li>
+                        <a href="#token-validate" class="sidebar-link">
+                            <span>Validate Token</span>
+                            <span class="badge-method badge-get">GET</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">File Storage API</div>
+                <ul class="sidebar-links">
+                    <li>
+                        <a href="#files-upload" class="sidebar-link">
+                            <span>Upload File</span>
+                            <span class="badge-method badge-post">POST</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#files-upload-multi" class="sidebar-link">
+                            <span>Upload Multiple</span>
+                            <span class="badge-method badge-post">POST</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#files-download" class="sidebar-link">
+                            <span>Download File</span>
+                            <span class="badge-method badge-get">GET</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-title">Data & Lifecycle</div>
+                <ul class="sidebar-links">
+                    <li>
+                        <a href="#data-update" class="sidebar-link">
+                            <span>Server Update</span>
+                            <span class="badge-method badge-any">ANY</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Documentation Content -->
+        <main class="docs-content">
+            
+            <!-- Section: Overview -->
+            <section id="overview" class="doc-section">
+                <div class="doc-header">
+                    <span class="doc-tag">Guide</span>
+                    <h1>Quipt API Reference</h1>
+                    <p>Comprehensive technical documentation for integrating with Quick Solutions' high-performance backend infrastructure.</p>
+                </div>
+
+                <div class="callout callout-info">
+                    <strong>Base URL:</strong> The API is accessible at <code>https://api.qsmc.live</code> (or <code>http://localhost:8080</code> in local development).
+                </div>
+
+                <h3 style="margin: 24px 0 12px; font-size: 1.25rem;">Authentication</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                    Protected endpoints require the <code>Authorization</code> header containing your issued API token. Pass it with every request as shown below:
+                </p>
+
+                <div class="code-box">
+                    <div class="code-header">
+                        <span>HTTP Header</span>
+                        <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
+                    </div>
+                    <pre>Authorization: qs_tok_9b4e18ac...</pre>
+                </div>
+            </section>
+
+            <!-- Section: Response Format -->
+            <section id="responses" class="doc-section">
+                <div class="doc-header">
+                    <span class="doc-tag">Standards</span>
+                    <h2>Standard Response Format</h2>
+                    <p>All endpoints return standardized JSON payloads wrapped in an <code>ApiResponse</code> container.</p>
+                </div>
+
+                <div class="code-box">
+                    <div class="code-header">
+                        <span>Success Response Example (JSON)</span>
+                        <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="code-key">"success"</span>: <span class="code-bool">true</span>,
+  <span class="code-key">"message"</span>: <span class="code-str">"Operation completed successfully"</span>,
+  <span class="code-key">"data"</span>: {
+    <span class="code-key">"token"</span>: <span class="code-str">"qs_tok_8f93bc1..."</span>,
+    <span class="code-key">"permissions"</span>: [<span class="code-str">"read:files"</span>, <span class="code-str">"write:files"</span>]
+  }
+}</pre>
+                </div>
+            </section>
+
+            <!-- Section: Account API -->
+            <section id="account-register" class="doc-section">
+                <div class="doc-header">
+                    <span class="doc-tag">Account Controller</span>
+                    <h2>User Account Registration</h2>
+                    <p>Create new studio accounts and dispatch verification emails.</p>
+                </div>
+
+                <div class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-post">POST</span>
+                            <span class="endpoint-url">/account/register</span>
+                        </div>
+                        <span class="endpoint-auth" style="background: rgba(134,239,172,0.1); color: var(--primary-pastel); border-color: rgba(134,239,172,0.3);">Public</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Registers a new user account. Emails must belong to valid TLDs (<code>.com</code>, <code>.net</code>, <code>.org</code>, <code>.live</code>, <code>.io</code>, <code>.dev</code>, <code>.app</code>). An email verification link is dispatched automatically.
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="param-name">username</td>
+                                        <td class="param-type">String</td>
+                                        <td class="param-req">Required</td>
+                                        <td>Desired unique username for the studio account.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="param-name">password</td>
+                                        <td class="param-type">String</td>
+                                        <td class="param-req">Required</td>
+                                        <td>Raw account password (stored securely as SHA-256).</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="param-name">email</td>
+                                        <td class="param-type">String</td>
+                                        <td class="param-req">Required</td>
+                                        <td>Unique email address for verification & notifications.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="code-box">
+                            <div class="code-header">
+                                <span>Example Request Body</span>
+                                <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
+                            </div>
+                            <pre>{
+  <span class="code-key">"username"</span>: <span class="code-str">"quickdev"</span>,
+  <span class="code-key">"password"</span>: <span class="code-str">"Secr3tP@ssw0rd!"</span>,
+  <span class="code-key">"email"</span>: <span class="code-str">"developer@qsmc.live"</span>
+}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="account-verify" class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-get">GET</span>
+                            <span class="endpoint-url">/account/verify</span>
+                        </div>
+                        <span class="endpoint-auth" style="background: rgba(134,239,172,0.1); color: var(--primary-pastel); border-color: rgba(134,239,172,0.3);">Public</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Validates the pending verification token and activates the account permanently.
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Query Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="param-name">token</td>
+                                        <td class="param-type">String</td>
+                                        <td class="param-req">Required</td>
+                                        <td>Raw verification token dispatched via email.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="param-name">email</td>
+                                        <td class="param-type">String</td>
+                                        <td class="param-req">Required</td>
+                                        <td>The matching email address being confirmed.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="account-edit" class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-any">ANY</span>
+                            <span class="endpoint-url">/account/edit</span>
+                        </div>
+                        <span class="endpoint-auth">Requires Auth</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Allows permission granting (<code>add_permission</code>) and scoped token generation (<code>create_token</code>).
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Token API -->
+            <section id="token-validate" class="doc-section">
+                <div class="doc-header">
+                    <span class="doc-tag">Token Controller</span>
+                    <h2>Token Validation</h2>
+                    <p>Verify validity and extract permissions of API tokens.</p>
+                </div>
+
+                <div class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-get">GET</span>
+                            <span class="endpoint-url">/token/validate</span>
+                        </div>
+                        <span class="endpoint-auth">Requires Auth</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Validates the token in the <code>Authorization</code> header and returns its active state.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: File Storage API -->
+            <section id="files-upload" class="doc-section">
+                <div class="doc-header">
+                    <span class="doc-tag">File Controller</span>
+                    <h2>File Storage & Assets</h2>
+                    <p>Secure multipart file uploads, sanitization, and streaming downloads.</p>
+                </div>
+
+                <div class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-post">POST</span>
+                            <span class="endpoint-url">/files/upload</span>
+                        </div>
+                        <span class="endpoint-auth">Requires Auth</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Upload a single multipart file. Sanitizes file names and saves them into the configured storage structure.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="files-upload-multi" class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-post">POST</span>
+                            <span class="endpoint-url">/files/upload-multiple</span>
+                        </div>
+                        <span class="endpoint-auth">Requires Auth</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Upload multiple files in batch. Returns detailed status lists of successful and failed files.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="files-download" class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-get">GET</span>
+                            <span class="endpoint-url">/files/download/{filePath}</span>
+                        </div>
+                        <span class="endpoint-auth" style="background: rgba(134,239,172,0.1); color: var(--primary-pastel); border-color: rgba(134,239,172,0.3);">Public / Secure</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Downloads a stored file as a stream with path-traversal protection.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Data & Lifecycle -->
+            <section id="data-update" class="doc-section">
+                <div class="doc-header">
+                    <span class="doc-tag">Data Controller</span>
+                    <h2>Server Management & Uptime</h2>
+                    <p>System status, uptime telemetry, and lifecycle maintenance commands.</p>
+                </div>
+
+                <div class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-get">GET</span>
+                            <span class="endpoint-url">/data/status (or /status)</span>
+                        </div>
+                        <span class="endpoint-auth" style="background: rgba(134,239,172,0.1); color: var(--primary-pastel); border-color: rgba(134,239,172,0.3);">Public</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Returns current JVM server uptime, start time timestamp, and formatted uptime duration.
+                        </div>
+
+                        <div class="code-box">
+                            <div class="code-header">
+                                <span>Response Schema (200 OK)</span>
+                                <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
+                            </div>
+                            <pre><code>{
+  "success": true,
+  "data": {
+    "status": "UP",
+    "uptime_ms": 142850,
+    "uptime_seconds": 142,
+    "start_time_ms": 1775105400000,
+    "formatted_uptime": "0d 00h 02m 22s"
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint-block">
+                    <div class="endpoint-header">
+                        <div class="endpoint-route">
+                            <span class="badge-method badge-any">ANY</span>
+                            <span class="endpoint-url">/data/update</span>
+                        </div>
+                        <span class="endpoint-auth">Requires Auth</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="endpoint-desc">
+                            Initiates a graceful server restart and update cycle.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Framework maintenance notice / developer guide -->
+            <div class="framework-tip">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    Maintaining and Extending Documentation
+                </h3>
+                <p>
+                    This documentation page is structured with modular sections and copy-paste friendly endpoint templates. To add a new endpoint, duplicate any <code>&lt;div class="endpoint-block"&gt;</code> block and add an entry to the sidebar list.
+                </p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Quick Solutions. Built for speed and reliability.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive script for search & copy -->
+    <script>
+        // Endpoint live search filter
+        const searchInput = document.getElementById('endpointSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase().trim();
+                const blocks = document.querySelectorAll('.endpoint-block');
+                const sidebarLinks = document.querySelectorAll('.sidebar-links li');
+
+                blocks.forEach(block => {
+                    const text = block.textContent.toLowerCase();
+                    if (text.includes(term) || term === '') {
+                        block.style.display = 'block';
+                    } else {
+                        block.style.display = 'none';
+                    }
+                });
+
+                sidebarLinks.forEach(link => {
+                    const text = link.textContent.toLowerCase();
+                    if (text.includes(term) || term === '') {
+                        link.style.display = 'block';
+                    } else {
+                        link.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Copy button helper
+        function copySnippet(button) {
+            const pre = button.parentElement.nextElementSibling;
+            if (pre) {
+                navigator.clipboard.writeText(pre.innerText).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    button.style.color = '#86efac';
+                    setTimeout(() => {
+                        button.innerText = original;
+                        button.style.color = '';
+                    }, 2000);
+                });
+            }
+        }
+
+        // Active link tracking on scroll
+        const sections = document.querySelectorAll('.doc-section');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 120) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

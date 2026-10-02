@@ -154,7 +154,18 @@ Downloads a file by path.
 
 ## 4. `DataController` — `/data`
 
-Handles server data/update operations.
+Handles server data/update operations and telemetry status.
+
+---
+
+### `GET /data/status` (also mapped to `/status` and `/uptime`)
+
+Returns runtime system metrics including start time, uptime in milliseconds/seconds, and formatted duration.
+
+**Behavior:**
+- Collects JVM uptime via `ManagementFactory.getRuntimeMXBean()`.
+- Calculates human-readable uptime (`Xd Xh Xm Xs`).
+- Returns `status: "UP"`, `uptime_ms`, `uptime_seconds`, `start_time_ms`, and `formatted_uptime`.
 
 ---
 

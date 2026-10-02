@@ -36,7 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 /.env
-/quipt/
+/quiptodl/
 /src/main/resources/application-local.properties
 /http-client.env.json
 /client.http

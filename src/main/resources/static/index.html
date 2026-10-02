@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Solutions — Studio & API</title>
+    <meta name="description" content="Quick Solutions provides high-performance API services, Minecraft infrastructure, automation, and custom tooling.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0c120f;
+            --bg-surface: #121b16;
+            --bg-surface-elevated: #18241e;
+            --bg-card: rgba(20, 31, 25, 0.75);
+            --bg-card-hover: rgba(26, 41, 33, 0.9);
+            --border: rgba(167, 243, 208, 0.12);
+            --border-highlight: rgba(134, 239, 172, 0.35);
+            --text-primary: #f2fbf6;
+            --text-secondary: #9db2a6;
+            --text-muted: #647d70;
+            
+            /* Pastel Green primary palette */
+            --primary: #86efac;
+            --primary-pastel: #a7f3d0;
+            --primary-dark: #34d399;
+            --primary-glow: rgba(134, 239, 172, 0.25);
+            --primary-gradient: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 50%, #34d399 100%);
+            
+            --accent-mint: #6ee7b7;
+            --accent-cyan: #67e8f9;
+            --accent-amber: #fde68a;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-full: 9999px;
+            --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px -10px rgba(134, 239, 172, 0.3);
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(134, 239, 172, 0.1), transparent 45%),
+                radial-gradient(circle at 85% 25%, rgba(110, 231, 183, 0.08), transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(52, 211, 153, 0.06), transparent 45%),
+                linear-gradient(to bottom, transparent, rgba(12, 18, 15, 0.8));
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism utility */
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(12, 18, 15, 0.85);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0c120f;
+            box-shadow: 0 0 15px rgba(134, 239, 172, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-pastel);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            font-size: 0.925rem;
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: #08110b;
+            box-shadow: 0 0 20px rgba(134, 239, 172, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #bbf7d0 0%, #86efac 50%, #4ade80 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(134, 239, 172, 0.45);
+        }
+
+        .btn-secondary {
+            background: rgba(167, 243, 208, 0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(167, 243, 208, 0.12);
+            border-color: rgba(167, 243, 208, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-glow {
+            background: linear-gradient(135deg, #86efac, #34d399);
+            color: #08110b;
+            box-shadow: 0 0 25px rgba(134, 239, 172, 0.4);
+        }
+
+        .btn-glow:hover {
+            background: linear-gradient(135deg, #6ee7b7, #10b981);
+            box-shadow: 0 0 35px rgba(134, 239, 172, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 90px 0 60px;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            background: rgba(134, 239, 172, 0.1);
+            border: 1px solid rgba(134, 239, 172, 0.3);
+            color: var(--primary-pastel);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #86efac;
+            box-shadow: 0 0 10px #86efac;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.25rem);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 680px;
+            margin: 0 auto 36px;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Interactive Showcase / Terminal */
+        .showcase {
+            margin: 50px auto 80px;
+            max-width: 880px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-glow), var(--shadow-subtle);
+            border: 1px solid var(--border);
+        }
+
+        .terminal-header {
+            background: #15221b;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #f87171; }
+        .dot-yellow { background: #fde68a; }
+        .dot-green { background: #86efac; }
+
+        .terminal-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .terminal-body {
+            background: #090e0b;
+            padding: 24px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #d1fae5;
+            overflow-x: auto;
+            text-align: left;
+        }
+
+        .code-keyword { color: #f472b6; }
+        .code-string { color: #86efac; }
+        .code-prop { color: #a7f3d0; }
+        .code-comment { color: #647d70; }
+        .code-num { color: #fde68a; }
+
+        /* Section Headings */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Features Grid */
+        .features {
+            padding: 60px 0 100px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-highlight);
+            background: var(--bg-card-hover);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            background: rgba(134, 239, 172, 0.1);
+            color: var(--primary-pastel);
+            border: 1px solid rgba(134, 239, 172, 0.25);
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* API Endpoints Overview */
+        .endpoints-section {
+            padding: 60px 0 100px;
+        }
+
+        .endpoint-card {
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            transition: border-color 0.2s ease;
+        }
+
+        .endpoint-card:hover {
+            border-color: var(--border-highlight);
+        }
+
+        .endpoint-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .method-badge {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .method-get { background: rgba(52, 211, 153, 0.15); color: #86efac; border: 1px solid rgba(52, 211, 153, 0.3); }
+        .method-post { background: rgba(103, 232, 249, 0.15); color: #67e8f9; border: 1px solid rgba(103, 232, 249, 0.3); }
+        .method-all { background: rgba(253, 230, 138, 0.15); color: #fde68a; border: 1px solid rgba(253, 230, 138, 0.3); }
+
+        .endpoint-path {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            font-size: 1rem;
+            color: #f8fafc;
+        }
+
+        .endpoint-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Stats & Studio highlights */
+        .stats-banner {
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            background: linear-gradient(135deg, rgba(20, 31, 25, 0.8), rgba(12, 18, 15, 0.9));
+            border: 1px solid var(--border);
+            margin: 40px 0 100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.03em;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* Call to Action */
+        .cta-section {
+            text-align: center;
+            padding: 80px 24px 100px;
+            position: relative;
+        }
+
+        .cta-box {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            border-radius: var(--radius-lg);
+            background: radial-gradient(circle at 50% 0%, rgba(134, 239, 172, 0.18), transparent 70%), var(--bg-surface-elevated);
+            border: 1px solid var(--border-highlight);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .cta-box h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .cta-box p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+            max-width: 540px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            background: #080c0a;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .stats-banner {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 32px;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Nav -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="/" class="brand">
+                    <div class="brand-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+                    <span>Quick Solutions</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#endpoints">API Overview</a></li>
+                    <li><a href="/docs" style="color: var(--primary-pastel); font-weight: 600;">Documentation</a></li>
+                    <li><a href="#stats">Stats</a></li>
+                </ul>
+                <div style="display: flex; gap: 12px;">
+                    <a href="/docs" class="btn btn-secondary">Explore Docs</a>
+                    <a href="https://github.com" target="_blank" class="btn btn-primary">GitHub</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                <span>Quipt Studio Infrastructure v1.0</span>
+            </div>
+            <h1>
+                Engineered for <span class="gradient-text">Speed</span>.<br>
+                Built for Creators & Developers.
+            </h1>
+            <p>
+                Quick Solutions powers community networks, automated server orchestrations, and secure microservices with modern Spring Boot architecture.
+            </p>
+            <div class="hero-actions">
+                <a href="/docs" class="btn btn-primary" style="padding: 12px 28px; font-size: 1rem;">
+                    Browse API Docs &rarr;
+                </a>
+                <a href="#endpoints" class="btn btn-secondary" style="padding: 12px 24px; font-size: 1rem;">
+                    Quick Reference
+                </a>
+            </div>
+
+            <!-- Showcase / Interactive Code Terminal -->
+            <div class="showcase">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="dot dot-red"></div>
+                        <div class="dot dot-yellow"></div>
+                        <div class="dot dot-green"></div>
+                    </div>
+                    <span class="terminal-title">curl — https://api.qsmc.live/token/validate</span>
+                    <span style="font-size: 0.75rem; color: var(--primary-pastel); font-family: var(--font-mono);">HTTP/2 200 OK</span>
+                </div>
+                <div class="terminal-body">
+                    <pre><span class="code-comment"># Requesting token verification with scoped permissions</span>
+<span class="code-keyword">curl</span> -X GET https://api.qsmc.live/token/validate \
+  -H <span class="code-string">"Authorization: qs_tok_849204fe..."</span> \
+  -H <span class="code-string">"Accept: application/json"</span>
+
+<span class="code-comment"># Response (ApiResponse format)</span>
+{
+  <span class="code-prop">"success"</span>: <span class="code-keyword">true</span>,
+  <span class="code-prop">"message"</span>: <span class="code-string">"Token is active and authorized"</span>,
+  <span class="code-prop">"data"</span>: {
+    <span class="code-prop">"user"</span>: <span class="code-string">"quick"</span>,
+    <span class="code-prop">"permissions"</span>: [<span class="code-string">"admin"</span>, <span class="code-string">"files:write"</span>, <span class="code-string">"files:download"</span>],
+    <span class="code-prop">"valid"</span>: <span class="code-keyword">true</span>,
+    <span class="code-prop">"latency_ms"</span>: <span class="code-num">1.4</span>
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Banner -->
+    <div class="container">
+        <div class="stats-banner" id="stats">
+            <div>
+                <div class="stat-value gradient-text" id="live-uptime-display">--d --h --m --s</div>
+                <div class="stat-label" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #86efac; box-shadow: 0 0 8px #86efac; animation: pulse-green 2s infinite;"></span>
+                    Live System Uptime
+                </div>
+            </div>
+            <div>
+                <div class="stat-value gradient-text" id="live-latency-display">&lt; 5ms</div>
+                <div class="stat-label">Average Response Time</div>
+            </div>
+            <div>
+                <div class="stat-value gradient-text">SHA-256</div>
+                <div class="stat-label">Zero-Trust Token Hashing</div>
+            </div>
+            <div>
+                <div class="stat-value gradient-text">Java 25</div>
+                <div class="stat-label">Cutting Edge Runtime</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Features Grid -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Studio Core Features</h2>
+                <p>Everything required to operate resilient game servers, account services, and asset pipelines.</p>
+            </div>
+            <div class="grid-3">
+                <div class="feature-card glass">
+                    <div class="card-icon">⚡</div>
+                    <h3>Blazing Fast Rest API</h3>
+                    <p>Optimized with Spring Boot WebMVC, custom response unwrapping, and lean payload serialization for minimal network overhead.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="card-icon">🔐</div>
+                    <h3>Scoped Token Security</h3>
+                    <p>Fine-grained permissions per token. Issue revocable tokens without leaking master credentials or elevated system access.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="card-icon">📁</div>
+                    <h3>Protected File Pipeline</h3>
+                    <p>Multipart uploads with built-in path-traversal safeguards, filename sanitization, and high-performance streaming downloads.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="card-icon">✉️</div>
+                    <h3>Automated Email Auth</h3>
+                    <p>Built-in registration verification flow with strict TLD validation and instant verification token delivery.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="card-icon">🔄</div>
+                    <h3>Graceful System Updates</h3>
+                    <p>Trigger synchronized remote updates and process resets directly over authenticated HTTP channels.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="card-icon">🎮</div>
+                    <h3>Minecraft & Tiltify Hooks</h3>
+                    <p>Native integration points for player networks, charity fundraising events, and custom community campaigns.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Endpoints Preview & Link to Docs -->
+    <section class="endpoints-section" id="endpoints">
+        <div class="container">
+            <div class="section-header">
+                <h2>Quipt REST Endpoints</h2>
+                <p>Preview key endpoints below or explore full schemas in our dedicated documentation portal.</p>
+            </div>
+
+            <div class="endpoint-card glass">
+                <div class="endpoint-left">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/account/register</span>
+                </div>
+                <div class="endpoint-desc">Register new studio account and dispatch verification token</div>
+            </div>
+
+            <div class="endpoint-card glass">
+                <div class="endpoint-left">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/account/verify</span>
+                </div>
+                <div class="endpoint-desc">Verify email address using cryptographic verification token</div>
+            </div>
+
+            <div class="endpoint-card glass">
+                <div class="endpoint-left">
+                    <span class="method-badge method-all">ANY</span>
+                    <span class="endpoint-path">/account/edit</span>
+                </div>
+                <div class="endpoint-desc">Grant permissions (<code>add_permission</code>) or issue tokens (<code>create_token</code>)</div>
+            </div>
+
+            <div class="endpoint-card glass">
+                <div class="endpoint-left">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/token/validate</span>
+                </div>
+                <div class="endpoint-desc">Validate API tokens provided via Authorization header</div>
+            </div>
+
+            <div class="endpoint-card glass">
+                <div class="endpoint-left">
+                    <span class="method-badge method-post">POST</span>
+                    <span class="endpoint-path">/files/upload</span>
+                </div>
+                <div class="endpoint-desc">Upload and sanitize files into managed sub-directories</div>
+            </div>
+
+            <div class="endpoint-card glass">
+                <div class="endpoint-left">
+                    <span class="method-badge method-get">GET</span>
+                    <span class="endpoint-path">/files/download/**</span>
+                </div>
+                <div class="endpoint-desc">Stream and download stored server assets securely</div>
+            </div>
+
+            <div style="text-align: center; margin-top: 36px;">
+                <a href="/docs" class="btn btn-primary" style="padding: 12px 30px;">
+                    Open Full API Documentation &rarr;
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Ready to integrate with Quick Solutions?</h2>
+                <p>Read the complete technical guides, schema specs, and quick start references.</p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="/docs" class="btn btn-primary" style="padding: 12px 28px;">Read The Docs</a>
+                    <a href="mailto:quick@qsmc.live" class="btn btn-secondary" style="padding: 12px 24px;">Get In Touch</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <strong style="color: var(--text-primary);">Quick Solutions Studio</strong> — Built for performance and reliability.
+                </div>
+                <div>
+                    &copy; 2026 Quick Solutions. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Real Uptime Calculator & Live Polling
+        (function() {
+            const uptimeDisplay = document.getElementById('live-uptime-display');
+            const latencyDisplay = document.getElementById('live-latency-display');
+            if (!uptimeDisplay) return;
+
+            let serverStartTime = null;
+            let currentUptimeMs = 0;
+            let lastFetchTime = 0;
+
+            function formatUptime(totalSeconds) {
+                if (isNaN(totalSeconds) || totalSeconds < 0) totalSeconds = 0;
+                const days = Math.floor(totalSeconds / 86400);
+                const hours = Math.floor((totalSeconds % 86400) / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = Math.floor(totalSeconds % 60);
+
+                if (days > 0) {
+                    return `${days}d ${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+                } else if (hours > 0) {
+                    return `${hours}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+                } else {
+                    return `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
+                }
+            }
+
+            function updateDisplay() {
+                if (serverStartTime !== null) {
+                    const now = Date.now();
+                    const elapsedSinceFetch = now - lastFetchTime;
+                    const estimatedUptimeSec = Math.floor((currentUptimeMs + elapsedSinceFetch) / 1000);
+                    uptimeDisplay.textContent = formatUptime(estimatedUptimeSec);
+                }
+            }
+
+            async function fetchUptime() {
+                const reqStart = performance.now();
+                try {
+                    const response = await fetch('/status');
+                    const reqEnd = performance.now();
+                    const latency = Math.round(reqEnd - reqStart);
+                    
+                    if (latencyDisplay && latency > 0) {
+                        latencyDisplay.textContent = `${latency}ms`;
+                    }
+
+                    if (response.ok) {
+                        const res = await response.json();
+                        const data = res.data || res;
+                        if (data && typeof data.uptime_ms === 'number') {
+                            currentUptimeMs = data.uptime_ms;
+                            serverStartTime = data.start_time_ms || (Date.now() - currentUptimeMs);
+                            lastFetchTime = Date.now();
+                            updateDisplay();
+                        }
+                    }
+                } catch (err) {
+                    // In offline/static preview mode, fallback to dynamic browser-session uptime calculation
+                    if (serverStartTime === null) {
+                        serverStartTime = Date.now() - 3600000; // default 1 hour baseline
+                        currentUptimeMs = 3600000;
+                        lastFetchTime = Date.now();
+                        updateDisplay();
+                    }
+                }
+            }
+
+            // Initial fetch
+            fetchUptime();
+
+            // Tick every second for fluid real-time clock
+            setInterval(updateDisplay, 1000);
+
+            // Sync with server every 30 seconds
+            setInterval(fetchUptime, 30000);
+        })();
+    </script>
+</body>
+</html>

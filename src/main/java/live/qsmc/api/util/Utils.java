@@ -36,6 +36,8 @@ public class Utils {
         Token token = storage.token(providedSecret);
         if (token == null)
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Invalid secret");
+        if(token.expired())
+            return new ApiResponse<>(ApiResponse.Status.FAILURE, "Token has expired");
         return new ApiResponse<>(ApiResponse.Status.SUCCESS, storage.account(token));
     }
 

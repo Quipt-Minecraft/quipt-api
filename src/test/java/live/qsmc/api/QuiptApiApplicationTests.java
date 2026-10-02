@@ -1,26 +1,66 @@
 package live.qsmc.api;
 
-import live.qsmc.api.util.Utils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 class QuiptApiApplicationTests {
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
     @Test
-    void testFileUpload() throws IOException {
-        System.out.println("Hello World");
+    void testLandingPageIsServed() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Quick Solutions")))
+                .andExpect(content().string(containsString("Live System Uptime")))
+                .andExpect(content().string(containsString("live-uptime-display")));
+    }
+
+    @Test
+    void testDocsPageIsServed() throws Exception {
+        mockMvc.perform(get("/docs"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Quipt API Reference")))
+                .andExpect(content().string(containsString("Account API")))
+                .andExpect(content().string(containsString("/account/register")));
+    }
+
+    @Test
+    void testStatusEndpointReturnsUptime() throws Exception {
+        mockMvc.perform(get("/status"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("SUCCESS")))
+                .andExpect(jsonPath("$.data.status", is("UP")))
+                .andExpect(jsonPath("$.data.uptime_ms", notNullValue()))
+                .andExpect(jsonPath("$.data.start_time_ms", notNullValue()))
+                .andExpect(jsonPath("$.data.formatted_uptime", notNullValue()));
+
+        mockMvc.perform(get("/data/status"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("SUCCESS")))
+                .andExpect(jsonPath("$.data.status", is("UP")));
     }
 
 }
