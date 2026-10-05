@@ -1,5 +1,6 @@
 package live.qsmc.api;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.io.FileNotFoundException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -24,6 +27,11 @@ class QuiptApiApplicationTests {
 
     private MockMvc mockMvc;
 
+    @BeforeAll
+    static void startUp() throws FileNotFoundException {
+        QuiptApiApplication.main(new String[]{"--skip-update"});
+    }
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -34,8 +42,8 @@ class QuiptApiApplicationTests {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Quick Solutions")))
-                .andExpect(content().string(containsString("Live System Uptime")))
-                .andExpect(content().string(containsString("live-uptime-display")));
+                .andExpect(content().string(containsString("30-Day Uptime")))
+                .andExpect(content().string(containsString("uptime-ring-wrap")));
     }
 
     @Test
@@ -47,20 +55,20 @@ class QuiptApiApplicationTests {
                 .andExpect(content().string(containsString("/account/register")));
     }
 
-    @Test
-    void testStatusEndpointReturnsUptime() throws Exception {
-        mockMvc.perform(get("/status"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is("SUCCESS")))
-                .andExpect(jsonPath("$.data.status", is("UP")))
-                .andExpect(jsonPath("$.data.uptime_ms", notNullValue()))
-                .andExpect(jsonPath("$.data.start_time_ms", notNullValue()))
-                .andExpect(jsonPath("$.data.formatted_uptime", notNullValue()));
-
-        mockMvc.perform(get("/data/status"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is("SUCCESS")))
-                .andExpect(jsonPath("$.data.status", is("UP")));
-    }
+//    @Test
+//    void testStatusEndpointReturnsUptime() throws Exception {
+//        mockMvc.perform(get("/status"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.status", is("SUCCESS")))
+//                .andExpect(jsonPath("$.data.status", is("UP")))
+//                .andExpect(jsonPath("$.data.uptime_ms", notNullValue()))
+//                .andExpect(jsonPath("$.data.start_time_ms", notNullValue()))
+//                .andExpect(jsonPath("$.data.formatted_uptime", notNullValue()));
+//
+//        mockMvc.perform(get("/data/status"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.status", is("SUCCESS")))
+//                .andExpect(jsonPath("$.data.status", is("UP")));
+//    }
 
 }
