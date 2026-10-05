@@ -1,26 +1,49 @@
 package live.qsmc.api.spring.controller;
 
+import live.qsmc.api.QuiptApiApplication;
+import live.qsmc.api.account.AccountData;
+import live.qsmc.api.account.AccountStorage;
+import live.qsmc.api.account.ServerStorage;
+import live.qsmc.api.account.Token;
 import live.qsmc.api.util.Utils;
+import live.qsmc.quipt.core.config.ConfigManager;
+import live.qsmc.quipt.core.utils.HashUtils;
 import live.qsmc.quipt.core.utils.TaskScheduler;
 import live.qsmc.quipt.core.utils.net.ApiResponse;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.management.ManagementFactory;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/data")
 public class DataController {
 
-    private static final long START_TIME_MILLIS = System.currentTimeMillis();
+    @PostMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResponse<?> register(@RequestBody(required = false) String body) {
+        if (body == null || body.isBlank())
+            return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body is required in json format");
+        JSONObject json;
+        try {
+            json = new JSONObject(body);
+        } catch (Exception e) {
+            return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body must be in json format");
+        }
+        ServerStorage config = QuiptApiApplication.api().configs().config(ServerStorage.class);
+        config.logs.put(json);
+        config.save();
+        return new ApiResponse<>(ApiResponse.Status.SUCCESS, "Registration successful. Please check your email to verify your account.");
+    }
 
     @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<JSONObject> status() {
-        long jvmUptimeMillis = ManagementFactory.getRuntimeMXBean().getUptime();
-        long startTime = System.currentTimeMillis() - jvmUptimeMillis;
-        long uptimeSeconds = jvmUptimeMillis / 1000;
+        ServerStorage serverStorage = QuiptApiApplication.api().configs().config(ServerStorage.class);
+        long firstStartMs = serverStorage.firstStartMs;
+        long uptimeMs = System.currentTimeMillis() - firstStartMs;
+        long uptimeSeconds = uptimeMs / 1000;
 
         long days = uptimeSeconds / 86400;
         long hours = (uptimeSeconds % 86400) / 3600;
@@ -31,9 +54,9 @@ public class DataController {
 
         JSONObject data = new JSONObject();
         data.put("status", "UP");
-        data.put("uptime_ms", jvmUptimeMillis);
+        data.put("uptime_ms", uptimeMs);
         data.put("uptime_seconds", uptimeSeconds);
-        data.put("start_time_ms", startTime);
+        data.put("start_time_ms", firstStartMs);
         data.put("formatted_uptime", formatted);
 
         return new ApiResponse<>(ApiResponse.Status.SUCCESS, data);

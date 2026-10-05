@@ -465,6 +465,48 @@
             margin-top: 4px;
         }
 
+        /* Uptime ring */
+        .uptime-ring-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .uptime-ring-svg {
+            transform: rotate(-90deg);
+            overflow: visible;
+        }
+
+        .uptime-ring-bg {
+            fill: none;
+            stroke: rgba(134, 239, 172, 0.12);
+            stroke-width: 5;
+        }
+
+        .uptime-ring-fill {
+            fill: none;
+            stroke: url(#uptimeGrad);
+            stroke-width: 5;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .uptime-ring-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .uptime-ring-container {
+            position: relative;
+            width: 96px;
+            height: 96px;
+        }
+
         /* Call to Action */
         .cta-section {
             text-align: center;
@@ -617,11 +659,26 @@
     <!-- Highlights Banner -->
     <div class="container">
         <div class="stats-banner" id="stats">
-            <div>
-                <div class="stat-value gradient-text" id="live-uptime-display">--d --h --m --s</div>
+            <div class="uptime-ring-wrap">
+                <div class="uptime-ring-container">
+                    <svg class="uptime-ring-svg" width="96" height="96" viewBox="0 0 96 96">
+                        <defs>
+                            <linearGradient id="uptimeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#a7f3d0"/>
+                                <stop offset="100%" style="stop-color:#34d399"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="uptime-ring-bg" cx="48" cy="48" r="42"/>
+                        <circle class="uptime-ring-fill" id="uptime-ring-arc" cx="48" cy="48" r="42"
+                                stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+                    </svg>
+                    <div class="uptime-ring-center">
+                        <div class="stat-value gradient-text" id="live-uptime-display" style="font-size: 1.35rem; line-height: 1;">--%</div>
+                    </div>
+                </div>
                 <div class="stat-label" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
                     <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #86efac; box-shadow: 0 0 8px #86efac; animation: pulse-green 2s infinite;"></span>
-                    Live System Uptime
+                    30-Day Uptime
                 </div>
             </div>
             <div>
@@ -778,34 +835,35 @@
         (function() {
             const uptimeDisplay = document.getElementById('live-uptime-display');
             const latencyDisplay = document.getElementById('live-latency-display');
+            const ringArc = document.getElementById('uptime-ring-arc');
             if (!uptimeDisplay) return;
+
+            // SVG circumference for r=42: 2 * PI * 42 ≈ 263.89
+            const CIRCUMFERENCE = 2 * Math.PI * 42;
+            const THIRTY_DAYS_MS = 30 * 24 * 3600 * 1000;
 
             let serverStartTime = null;
             let currentUptimeMs = 0;
             let lastFetchTime = 0;
 
-            function formatUptime(totalSeconds) {
-                if (isNaN(totalSeconds) || totalSeconds < 0) totalSeconds = 0;
-                const days = Math.floor(totalSeconds / 86400);
-                const hours = Math.floor((totalSeconds % 86400) / 3600);
-                const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = Math.floor(totalSeconds % 60);
+            function formatUptimePct(uptimeMs) {
+                const pct = Math.min(100, (uptimeMs / THIRTY_DAYS_MS) * 100);
+                return pct.toFixed(pct >= 99.9 ? 2 : 1) + '%';
+            }
 
-                if (days > 0) {
-                    return `${days}d ${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
-                } else if (hours > 0) {
-                    return `${hours}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
-                } else {
-                    return `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
-                }
+            function updateRing(uptimeMs) {
+                if (!ringArc) return;
+                const pct = Math.min(1, uptimeMs / THIRTY_DAYS_MS);
+                const offset = CIRCUMFERENCE * (1 - pct);
+                ringArc.style.strokeDashoffset = offset.toFixed(3);
             }
 
             function updateDisplay() {
                 if (serverStartTime !== null) {
-                    const now = Date.now();
-                    const elapsedSinceFetch = now - lastFetchTime;
-                    const estimatedUptimeSec = Math.floor((currentUptimeMs + elapsedSinceFetch) / 1000);
-                    uptimeDisplay.textContent = formatUptime(estimatedUptimeSec);
+                    const elapsed = Date.now() - lastFetchTime;
+                    const estimatedMs = currentUptimeMs + elapsed;
+                    uptimeDisplay.textContent = formatUptimePct(estimatedMs);
+                    updateRing(estimatedMs);
                 }
             }
 
@@ -831,10 +889,10 @@
                         }
                     }
                 } catch (err) {
-                    // In offline/static preview mode, fallback to dynamic browser-session uptime calculation
+                    // Offline/static preview fallback
                     if (serverStartTime === null) {
-                        serverStartTime = Date.now() - 3600000; // default 1 hour baseline
-                        currentUptimeMs = 3600000;
+                        serverStartTime = Date.now();
+                        currentUptimeMs = 0;
                         lastFetchTime = Date.now();
                         updateDisplay();
                     }

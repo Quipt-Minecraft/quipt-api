@@ -2,6 +2,7 @@ package live.qsmc.api;
 
 import live.qsmc.api.account.AccountData;
 import live.qsmc.api.account.AccountStorage;
+import live.qsmc.api.account.ServerStorage;
 import live.qsmc.quipt.core.Quipt;
 import live.qsmc.quipt.core.QuiptIntegration;
 import live.qsmc.quipt.core.config.factories.GenericFactory;
@@ -98,7 +99,14 @@ public class QuiptApiApplication extends QuiptIntegration {
         } else api.logger().log("Update Checker", "Skipping update check");
         api.configs().factory(new GenericFactory<>(AccountData.class));
         api.configs().register(AccountStorage.class);
+        api.configs().register(ServerStorage.class);
 
+        ServerStorage serverStorage = api.configs().config(ServerStorage.class);
+        if (serverStorage.firstStartMs == 0) {
+            serverStorage.firstStartMs = System.currentTimeMillis();
+            serverStorage.save();
+            api.logger().log("ServerStorage", "First boot recorded: " + serverStorage.firstStartMs);
+        }
 
         SpringApplication.run(QuiptApiApplication.class, args);
 
