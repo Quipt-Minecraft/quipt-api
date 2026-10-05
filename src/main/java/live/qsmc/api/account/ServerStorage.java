@@ -18,6 +18,9 @@ public class ServerStorage extends Config {
     @ConfigValue
     public JSONArray logs = new JSONArray();
 
+    @ConfigValue
+    public JSONArray previousVersions = new JSONArray();
+
     public ServerStorage(File file, String name, ConfigTemplate.Extension extension, QuiptIntegration integration) {
         super(file, name, extension, integration);
     }

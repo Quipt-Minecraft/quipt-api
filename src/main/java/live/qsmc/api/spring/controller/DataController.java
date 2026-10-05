@@ -33,6 +33,13 @@ public class DataController {
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body must be in json format");
         }
         ServerStorage config = QuiptApiApplication.api().configs().config(ServerStorage.class);
+        for(int i = 0; i != config.logs.length(); i++){
+            JSONObject log = (JSONObject) config.logs.get(i);
+            if(log.equals(json)){
+                return new ApiResponse<>(ApiResponse.Status.FAILURE, "Duplicate log entry");
+            }
+
+        }
         config.logs.put(json);
         config.save();
         return new ApiResponse<>(ApiResponse.Status.SUCCESS, "Registration successful. Please check your email to verify your account.");
