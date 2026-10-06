@@ -29,6 +29,6 @@ public class Token implements JsonSerializable {
 
 
     public boolean expired() {
-        return System.currentTimeMillis() > this.expires;
+        return expires != 0 && System.currentTimeMillis() > this.expires;
     }
 }

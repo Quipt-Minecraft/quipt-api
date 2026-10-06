@@ -68,7 +68,10 @@ public class AccountController {
         if (invalidEmail(email)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Invalid email format");
         AccountStorage storage = QuiptApiApplication.api().configs().config(AccountStorage.class);
         for (AccountData account : storage.accounts.values()) {
-            if (account.id.equals(username)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Username is already taken");
+            if (account.id.equals(username)) {
+                System.out.println(account.json().toString(2));
+                return new ApiResponse<>(ApiResponse.Status.FAILURE, "Username is already taken");
+            }
             if (account.email.equals(email)) return new ApiResponse<>(ApiResponse.Status.FAILURE, "Email is already in use");
         }
 

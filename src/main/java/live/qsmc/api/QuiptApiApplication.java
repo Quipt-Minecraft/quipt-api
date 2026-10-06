@@ -3,9 +3,12 @@ package live.qsmc.api;
 import live.qsmc.api.account.AccountData;
 import live.qsmc.api.account.AccountStorage;
 import live.qsmc.api.account.ServerStorage;
+import live.qsmc.api.account.Token;
+import live.qsmc.api.util.Utils;
 import live.qsmc.quipt.core.Quipt;
 import live.qsmc.quipt.core.QuiptIntegration;
 import live.qsmc.quipt.core.config.factories.GenericFactory;
+import live.qsmc.quipt.core.utils.HashUtils;
 import live.qsmc.quipt.core.utils.net.HttpConfig;
 import live.qsmc.quipt.core.utils.net.NetworkUtils;
 import org.json.JSONArray;
@@ -98,14 +101,40 @@ public class QuiptApiApplication extends QuiptIntegration {
             }
         } else api.logger().log("Update Checker", "Skipping update check");
         api.configs().factory(new GenericFactory<>(AccountData.class));
-        api.configs().register(AccountStorage.class);
-        api.configs().register(ServerStorage.class);
-
-        ServerStorage serverStorage = api.configs().config(ServerStorage.class);
+        AccountStorage accountStorage = api.configs().register(AccountStorage.class);
+        ServerStorage serverStorage = api.configs().register(ServerStorage.class);
         if (serverStorage.firstStartMs == 0) {
             serverStorage.firstStartMs = System.currentTimeMillis();
             serverStorage.save();
             api.logger().log("ServerStorage", "First boot recorded: " + serverStorage.firstStartMs);
+        }
+
+        if(accountStorage.account("admin") == null){
+            String passwordHash = HashUtils.sha256("password");
+
+            String tokenId = Utils.generateToken();
+            AccountData accountData = new AccountData(
+                QuiptApiApplication.api(),
+                "admin",
+                "admin@localhost",
+                passwordHash,
+                tokenId
+            );
+            Token token = new Token(tokenId, "Default Admin Token");
+            token.permissionsArray.put("read:all");
+            token.permissionsArray.put("write:all");
+            token.permissionsArray.put("admin");
+            token.expires = 0;
+            accountData.add(token);
+            accountStorage.accounts.put(accountData);
+            File file = new File("defaultAdminAccount");
+            try {
+                api.logger().log("AccountStorage", "Created default admin account file... " + (file.createNewFile() ? "(Success)" : "(Failed)"));
+                Files.writeString(file.toPath(), "Username: admin\nPassword: password\nAccess Token: " + tokenId + "\nPlease change the password immediately.");
+            } catch (IOException e) {
+                api.logger().error("AccountStorage", "Failed to create default admin account file: " + e.getMessage());
+            }
+            accountStorage.save();
         }
 
         SpringApplication.run(QuiptApiApplication.class, args);

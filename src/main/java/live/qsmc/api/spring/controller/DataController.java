@@ -32,6 +32,7 @@ public class DataController {
         } catch (Exception e) {
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body must be in json format");
         }
+        json.remove("timestamp");
         ServerStorage config = QuiptApiApplication.api().configs().config(ServerStorage.class);
         for(int i = 0; i != config.logs.length(); i++){
             JSONObject log = (JSONObject) config.logs.get(i);
