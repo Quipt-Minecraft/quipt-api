@@ -1,29 +1,22 @@
 package live.qsmc.api.spring.controller;
 
 import live.qsmc.api.QuiptApiApplication;
-import live.qsmc.api.account.AccountData;
-import live.qsmc.api.account.AccountStorage;
 import live.qsmc.api.account.ServerStorage;
-import live.qsmc.api.account.Token;
 import live.qsmc.api.util.Utils;
-import live.qsmc.quipt.core.config.ConfigManager;
-import live.qsmc.quipt.core.utils.HashUtils;
 import live.qsmc.quipt.core.utils.TaskScheduler;
 import live.qsmc.quipt.core.utils.net.ApiResponse;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
-import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/data")
 public class DataController {
 
-    @PostMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<?> register(@RequestBody(required = false) String body) {
+    @PostMapping(value = "/repoUpdate", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResponse<?> repoUpdate(@RequestBody(required = false) String body) {
         if (body == null || body.isBlank())
             return new ApiResponse<>(ApiResponse.Status.FAILURE, "Body is required in json format");
         JSONObject json;
@@ -43,7 +36,10 @@ public class DataController {
         }
         config.logs.put(json);
         config.save();
-        return new ApiResponse<>(ApiResponse.Status.SUCCESS, "Registration successful. Please check your email to verify your account.");
+
+//        Quipt.INSTANCE.webhooks().send(json);
+
+        return new ApiResponse<>(ApiResponse.Status.SUCCESS, "Repository update successful.");
     }
 
     @GetMapping(value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
